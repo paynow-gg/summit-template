@@ -1,0 +1,54 @@
+
+{% if page == "products" %}
+<div class="category-meta flex gap-5 items-center text-3xl">
+    <a href="/" class="w-13 h-13 relative bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+        <i class="fa-solid fa-house text-xl"></i>
+    </a>
+    <div class="text relative transition-all duration-200 hidden md:flex flex-col">
+        <p class="text-sm text-muted font-bold">Browsing In</p>
+        {% if activeTag is defined %}
+            <h2 class="text-xl md:text-2xl font-bold text-white">{{ activeTag.name }}</h2>
+        {% elseif activeTags is defined and activeTags|length > 0 %}
+            <h2 class="text-xl md:text-2xl font-bold text-white">{{ activeTags[0].name }}</h2>
+        {% else %}
+            <h2 class="text-xl md:text-2xl font-bold text-white">All Products</h2>
+        {% endif %}
+    </div>
+</div>
+{% elseif page == "cart" %}
+<div class="category-meta flex gap-5 items-center text-3xl">
+    <a href="/" class="w-13 h-13 relative bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+        <i class="fa-solid fa-house text-xl"></i>
+    </a>
+    <div class="text relative transition-all duration-200 hidden md:block">
+        <p class="text-sm text-muted font-bold">{{ cart.lines|length }} item{% if cart.lines|length != 1 %}s{% endif %} in your cart</p>
+        <h2 class="text-xl md:text-2xl font-bold text-white">Shopping Cart</h2>
+    </div>
+</div>
+{% else %}
+<div id="category-socials" class="socials flex gap-5 items-center text-3xl">
+    <a href="/" class="w-13 h-13 relative bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+        <i class="fa-solid fa-house text-xl"></i>
+    </a>
+    {% if config("discord_url") != "" %}
+        <a href="{{ config("discord_url") }}" target="_blank" class="w-13 h-13 relative bg-content-light hidden md:flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+            <i class="fa-brands fa-discord text-2xl"></i>
+        </a>
+    {% endif %}
+    {% if config("instagram_url") != "" %}
+        <a href="{{ config("instagram_url") }}" target="_blank" class="w-13 h-13 relative bg-content-light hidden md:flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+    {% endif %}
+    {% if config("youtube_url") != "" %}
+        <a href="{{ config("youtube_url") }}" target="_blank" class="w-13 h-13 relative bg-content-light hidden md:flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+            <i class="fa-brands fa-youtube text-2xl"></i>
+        </a>
+    {% endif %}
+    {% if config("tiktok_url") != "" %}
+        <a href="{{ config("tiktok_url") }}" target="_blank" class="w-13 h-13 relative bg-content-light hidden md:flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary shadow-xl">
+            <i class="fa-brands fa-tiktok text-2xl"></i>
+        </a>
+    {% endif %}
+</div>
+{% endif %}

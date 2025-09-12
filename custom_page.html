@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% include 'partials/mobile-navigation.html' %}
+
+<div class="sidebar flex-1 md:flex-none md:max-w-[355px] w-full flex flex-col md:gap-8 gap-6 order-10 md:order-0">
+    {% include 'partials/sidebar.html' %}
+</div>
+
+<div class="inner-content flex flex-1 flex-col md:gap-8 gap-6">
+    {% include 'partials/content-header.html' %}
+    
+    <div class="bg-content rounded-xl shadow-2xl p-10 md:p-12 space-y-12">
+        <section class="space-y-5">
+            <div class="title flex gap-5">
+                <div class="w-12 h-12 text-lg cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                    <i class="fa-regular fa-file-lines"></i>
+                </div>
+                <div class="text">
+                    <p class="text-xs uppercase font-bold text-muted">Currently Viewing</p>
+                    <h1 class="text-3xl font-black text-white">{{ title }}</h1>
+                </div>
+            </div>
+            <p class="text-muted">
+                {{ content|raw }}
+            </p>
+        </section>
+    </div>
+
+</div>
+{% endblock %}

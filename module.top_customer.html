@@ -1,0 +1,17 @@
+{% for customer in module.data.customers|slice(0, 1) %}
+    <div class="bg-content rounded-xl shadow-2xl p-8 md:p-9 top-customer">
+        <div class="flex items-center gap-5">
+            <div class="w-12 h-12 cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300">
+                {% if customer.steam.avatarUrl  %}
+                    <img src="{{ customer.steam.avatarUrl ?: defaultAvatar }}" alt="Avatar">
+                {% else %}
+                    <img src="{{ customer.minecraft.avatar_url }}" alt="Avatar">
+                {% endif %}
+            </div>
+            <div class="title">
+                <p class="text-xs uppercase font-bold text-muted">Top Donator</p>
+                <h1 class="text-2xl font-black text-white">{{ customer.steam.name ?? customer.name }}</h1>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,44 @@
+{% if module.data.orders %}
+<div class="bg-content rounded-xl shadow-2xl p-8 md:p-9 recent-payments">
+    <div class="space-y-6">
+        <div class="title flex gap-5">
+            <div class="w-10 h-10 cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                <i class="fa-solid fa-users text-muted"></i>
+            </div>
+            <div class="text">
+                <p class="text-xs uppercase font-bold text-muted">{{ module.data.settings.header }}</p>
+                <h1 class="text-2xl font-black text-white">Payment Feed</h1>
+            </div>
+        </div>
+        <div class="grid grid-cols-5 gap-5">
+                {% for order in module.data.orders|slice(0, module.data.settings.displayLimit) %}
+                    <div 
+                    x-data="tooltip('{{ order.customer.steam.name ?? order.customer.name }} {% if module.data.settings.displayPurchasedProduct %}{% for line in order.lines|slice(0, 1) %}| {{ line.product_name }}{% endfor %}{% endif %}{% if module.data.settings.displayPriceOfPurchase %} | {{ order.total_amount != 0 ? order.total_amount | money_store_currency : "FREE" }}{%endif%}')" 
+                        @mouseenter="show = true" 
+                        @mouseleave="show = false"
+                        class="relative flex">
+                        <slot>
+                            <div class="w-full h-10 cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                                    {% if customer.steam.avatarUrl  %}
+                                        <img src="{{ order.customer.steam.avatarUrl ?: defaultAvatar }}" alt="Avatar">
+                                    {% else %}
+                                        <img src="{{ order.customer.minecraft.avatar_url }}" alt="Avatar">
+                                    {% endif %}
+                            </div>
+                        </slot>
+                        <div x-cloak x-show="show"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 transform scale-95"
+                            x-transition:enter-end="opacity-100 transform scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 transform scale-100"
+                            x-transition:leave-end="opacity-0 transform scale-95"
+                            class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-sm text-white bg-content-light rounded-lg border border-white/10 whitespace-nowrap z-50"
+                            x-text="message">
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

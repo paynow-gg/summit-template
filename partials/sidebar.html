@@ -1,0 +1,7 @@
+{% include 'partials/store-button.html' %}
+
+{% if block('sidebar') is not defined %}
+    {{ modules | raw }}
+{% else %}
+    {% block sidebar %}{% endblock %}
+{% endif %}

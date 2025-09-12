@@ -1,0 +1,192 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="flex-1 flex items-center justify-center min-h-[60vh]">
+    <div class="w-full max-w-lg mx-auto flex-1">
+        <div class="bg-content rounded-2xl shadow-2xl p-8 border border-content-light">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-primary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <i class="fa-solid fa-user text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    Enter Your Username
+                </h1>
+                <p class="text-muted text-sm">
+                    Please enter your Minecraft username to continue
+                </p>
+            </div>
+
+            <form method="post" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-white mb-2">
+                        Minecraft Username
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-user text-muted text-sm"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="username"
+                            class="w-full pl-10 pr-4 py-3 bg-content-light border border-content-light rounded-xl text-white placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                            placeholder="Enter your username"
+                            required
+                            autocomplete="username"
+                            maxlength="16"
+                        />
+                    </div>
+                    <p class="mt-2 text-xs text-muted">
+                        Your Minecraft username (3-16 characters)
+                    </p>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full bg-primary btn-shine text-white font-bold py-3 px-4 rounded-xl hover:opacity-75 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                    <span>Continue</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+
+                <div class="text-center">
+                    <p class="text-xs text-muted">
+                        By continuing, you agree to our 
+                        <a href="/legal/terms-of-service" class="text-primary hover:text-white transition-colors">
+                            Terms of Service
+                        </a>
+                        and 
+                        <a href="/legal/privacy-policy" class="text-primary hover:text-white transition-colors">
+                            Privacy Policy
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-6 bg-content-light rounded-xl p-4 border border-content-light">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                    <i class="fa-solid fa-shield-alt text-primary text-lg mt-0.5"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white text-sm mb-1">Secure Authentication</h3>
+                    <p class="text-xs text-muted leading-relaxed">
+                        Your information is protected with industry-standard security. 
+                        We only use your username for account identification and order processing.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <p class="text-xs text-muted">
+                Need help? 
+                <a href="/support" class="text-primary hover:text-white transition-colors">
+                    Contact Support
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('username');
+    const form = usernameInput.closest('form');
+    
+    usernameInput.focus();
+    
+    usernameInput.addEventListener('input', function(e) {
+        let value = e.target.value;
+        
+        value = value.replace(/[^a-zA-Z0-9_]/g, '');
+        
+        if (value.length > 16) {
+            value = value.substring(0, 16);
+        }
+        
+        e.target.value = value;
+        
+        if (value.length >= 3) {
+            e.target.classList.remove('border-red-500');
+            e.target.classList.add('border-green-500');
+        } else if (value.length > 0) {
+            e.target.classList.remove('border-green-500');
+            e.target.classList.add('border-red-500');
+        } else {
+            e.target.classList.remove('border-green-500', 'border-red-500');
+        }
+    });
+    
+    form.addEventListener('submit', function(e) {
+        const username = usernameInput.value.trim();
+        
+        if (username.length < 3) {
+            e.preventDefault();
+            usernameInput.focus();
+            usernameInput.classList.add('border-red-500');
+            
+            let errorDiv = form.querySelector('.error-message');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message text-red-400 text-sm mt-2 text-center';
+                form.appendChild(errorDiv);
+            }
+            errorDiv.textContent = 'Username must be at least 3 characters long';
+            
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 3000);
+        }
+    });
+    
+    usernameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            form.submit();
+        }
+    });
+});
+</script>
+
+<style>
+input:focus {
+    box-shadow: 0 0 0 3px rgba(117, 77, 212, 0.1);
+}
+
+form.submitting button {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+form.submitting button::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+.player-wrapper {
+    display: none !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+    .login-container {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}

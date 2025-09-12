@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% include 'partials/mobile-navigation.html' %}
+
+<div class="sidebar flex-1 md:flex-none md:max-w-[355px] w-full flex flex-col md:gap-8 gap-6 order-10 md:order-0">
+    {% include 'partials/sidebar.html' %}
+</div>
+
+<div class="inner-content flex flex-1 flex-col md:gap-8 gap-6">
+    
+    {% include 'partials/content-header.html' %}
+
+    {% if cart.lines|length == 0 %}
+        <div class="bg-content rounded-2xl shadow-2xl p-12">
+            <div class="text-center">
+                <div class="w-24 h-24 bg-content-light rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <i class="fa-solid fa-shopping-cart text-4xl text-muted"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-4">Your cart is empty</h2>
+                <p class="text-muted mb-8">Looks like you haven't added any items to your cart yet. Browse our products and find something you like!</p>
+                <a href="/" class="bg-primary btn-shine text-white rounded-xl py-4 px-8 font-bold hover:opacity-75 transition-all inline-flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="space-y-6">
+            {% for line in cart.lines %}
+            <div class="bg-content rounded-2xl shadow-2xl p-6 transition-all duration-200 hover:shadow-3xl">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+                    
+                    <div class="flex-shrink-0">
+                        <div class="w-20 h-20 bg-content-light rounded-xl flex items-center justify-center overflow-hidden">
+                            {% if line.image_url %}
+                                <img alt="{{ line.name }}" src="{{ line.image_url }}" class="w-full h-full object-cover" />
+                            {% else %}
+                                <i class="fa-solid fa-box-open text-2xl text-primary"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-xl font-bold text-white mb-2 truncate">{{ line.name }}</h3>
+                        
+                        {% if line.selected_gameserver %}
+                            <p class="text-sm text-muted mb-2">
+                                <i class="fa-solid fa-server mr-1"></i>
+                                Server: {{ line.selected_gameserver.name }}
+                            </p>
+                        {% endif %}
+                        
+                        <p class="text-primary text-lg font-bold">
+                            {{ line.price | money }} {{ store.currency }}
+                            {% if line.quantity > 1 %}
+                                <span class="text-sm text-muted ml-2">each</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center bg-content-light rounded-xl p-2 gap-3">
+                            <span class="text-sm text-muted font-medium">Qty:</span>
+                            <form method="POST" action="/cart/set/{{ line.slug }}" class="flex items-center">
+                                <input 
+                                    type="number" 
+                                    name="quantity" 
+                                    value="{{ line.quantity }}" 
+                                    min="1"
+                                    class="w-16 text-center bg-content text-white rounded-lg py-1 px-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    onchange="this.form.submit();"
+                                    {% if line.price == 0.00 %}disabled{% endif %}
+                                />
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="text-right min-w-0">
+                        <p class="text-2xl font-bold text-primary">
+                            {{ (line.price * line.quantity) | money }} {{ store.currency }}
+                        </p>
+                    </div>
+
+                    <div class="flex-shrink-0">
+                        <a href="/cart/remove/{{ line.slug }}" 
+                           class="w-10 h-10 bg-red-500 hover:bg-red-600 rounded-lg flex items-center justify-center text-white transition-colors">
+                            <i class="fa-solid fa-trash text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="bg-content rounded-2xl shadow-2xl p-8">
+            <div class="flex flex-col gap-6">
+                
+                <div class="text-center lg:text-right">
+                    <p class="text-muted text-sm mb-2">Total Amount</p>
+                    <p class="text-4xl font-bold text-primary">
+                        {{ cart.total | money }} {{ store.currency }}
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <a href="/cart/empty" 
+                    class="inline-flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors font-medium">
+                        <i class="fa-solid fa-trash"></i>
+                        Remove All Items
+                    </a>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="/" 
+                        class="px-6 py-3 bg-content-light text-white rounded-xl font-medium hover:bg-primary transition-all text-center">
+                            Continue Shopping
+                        </a>
+                        
+                        <a href="/cart/checkout" 
+                        class="px-8 py-3 bg-primary btn-shine text-white rounded-xl font-bold hover:opacity-75 transition-all inline-flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-credit-card"></i>
+                            Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

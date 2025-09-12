@@ -1,0 +1,43 @@
+<div id="hero" class="transition-all duration-400">
+    <div class="container pt-8 md:pt-24 md:pb-12 mx-auto flex items-center justify-center flex-col md:flex-row">
+        <div class="player-wrapper left hidden md:flex flex-1">
+            <div id="copy" data-clipboard-text="server-ip" class="player-wrap flex items-center gap-8 cursor-pointer transition-all hover:opacity-80 duration-300 hover:scale-103">
+                <div class="icon relative w-20 h-20 rounded-2xl shadow-2xl flex items-center justify-center bg-primary text-white text-shadow-2xl">
+                    <i class="fa-solid fa-play text-3xl"></i>
+                    {% if store.game == "minecraft" %}
+                        <div class="count rounded-xl bg-white px-2 py-1 absolute top-0 left-0 text-primary -ml-3 -mt-3 font-bold shadow-xl text-md">0</div>
+                    {% endif %}
+                </div>
+                <div class="text text-shadow-sm">
+                    <h1 class="text-2xl font-black text-white">Play Now</h1>
+                    <p class="font-bold">Copy IP</p>
+                </div>
+            </div>
+        </div>
+        {% if config("logo_url") != "" %}
+            <div class="logo">
+                <a href="/">
+                    <img class="h-[{{ config("logo_height") }}]" src="{{ config("logo_url") }}">
+                </a>
+            </div>
+        {% endif %}
+        <div class="mobile-player-wrapper flex md:hidden justify-center items-center">
+            <div class="inner-wrapper flex items-center justify-center gap-2 cursor-pointer border transition-all text-white bg-white/10 hover:bg-white/15 border-white/15 hover:border-white/25 rounded-xl px-4 py-2 shadow-xl">
+                <i class="fa-regular fa-copy"></i>
+                play.serverip.com
+            </div>
+        </div>
+        <div class="player-wrapper hidden md:flex justify-end right flex-1">
+            <div id="discord" class="player-wrap flex justify-end items-center gap-8 text-right ml-auto cursor-pointer transition-all hover:opacity-80 duration-300 hover:scale-103">
+                <div class="icon relative order-5 w-20 h-20 rounded-2xl shadow-2xl flex items-center justify-center bg-primary text-white text-shadow-2xl">
+                    <i class="fa-brands fa-discord text-3xl"></i>
+                    <div class="count rounded-xl bg-white px-2 py-1 absolute top-0 right-0 text-primary -mr-3 -mt-3 font-bold shadow-xl text-md">0</div>
+                </div>
+                <div class="text text-shadow-sm">
+                    <h1 class="text-2xl font-black text-white">Discord</h1>
+                    <p class="font-bold">Join Now</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

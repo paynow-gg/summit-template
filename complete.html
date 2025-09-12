@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% include 'partials/mobile-navigation.html' %}
+
+<div class="sidebar flex-1 md:flex-none md:max-w-[355px] w-full flex flex-col md:gap-8 gap-6 order-10 md:order-0">
+    {% include 'partials/sidebar.html' %}
+</div>
+
+<div class="inner-content flex flex-1 flex-col md:gap-8 gap-6">
+    {% include 'partials/content-header.html' %}
+
+    <div class="bg-emerald-300/10 rounded-xl shadow-2xl p-10 md:p-12">
+        <div class="left space-y-4 text-center">
+            <div class="title flex flex-col items-center justify-center gap-5">
+                <div class="w-16 h-16 text-2xl cursor-pointer relative overflow-hidden bg-emerald-300/15 flex text-white items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300">
+                    <i class="fa-solid fa-check text-emerald-300"></i>
+                </div>
+                <div class="text">
+                    <p class="text-sm uppercase font-bold text-emerald-300">Thank you for your support.</p>
+                    <h1 class="text-4xl font-black text-white uppercase mt-2">Payment Completed!</h1>
+                </div>
+            </div>
+            <p class="text-emerald-300">
+                {{ complete.text | raw }}
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

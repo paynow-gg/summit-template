@@ -1,0 +1,169 @@
+<footer class="mt-auto bg-black/20 border-t border-white/5">
+    <div class="container mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    {% if store.logo_url %}
+                        <img src="{{ store.logo_url }}" alt="{{ store.name }}" class="h-8 w-auto">
+                    {% else %}
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-gamepad text-white text-sm"></i>
+                        </div>
+                    {% endif %}
+                    <h3 class="text-lg font-bold text-white">{{ store.name }}</h3>
+                </div>
+                <p class="text-sm text-muted leading-relaxed">
+                    Your trusted source for premium {{ store.platform|default('gaming') }} content and services.
+                </p>
+                
+                {% if config("discord_url") or config("twitter_url") or config("instagram_url") or config("youtube_url") or config("twitch_url") or config("tiktok_url") or config("facebook_url") %}
+                <div class="flex items-center gap-3">
+                    {% if config("discord_url") %}
+                        <a href="{{ config("discord_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-discord text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("twitter_url") %}
+                        <a href="{{ config("twitter_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-x-twitter text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("youtube_url") %}
+                        <a href="{{ config("youtube_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("twitch_url") %}
+                        <a href="{{ config("twitch_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-twitch text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("instagram_url") %}
+                        <a href="{{ config("instagram_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("tiktok_url") %}
+                        <a href="{{ config("tiktok_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-tiktok text-sm"></i>
+                        </a>
+                    {% endif %}
+                    {% if config("facebook_url") %}
+                        <a href="{{ config("facebook_url") }}" target="_blank" class="w-8 h-8 bg-content-light hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-facebook text-sm"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider">Quick Links</h4>
+                <nav class="space-y-2">
+                    <a href="/" class="block text-sm text-muted hover:text-primary transition-colors">
+                        Home
+                    </a>
+                    {% for navlink in navlinks %}
+                        <a href="/products?tag={{ navlink.tag_query[0] }}" class="block text-sm text-muted hover:text-primary transition-colors">
+                            {{ navlink.name }}
+                        </a>
+                    {% endfor %}
+                    {% if supports_customer_management %}
+                        <a href="/account" class="block text-sm text-muted hover:text-primary transition-colors">
+                            My Account
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider">Support</h4>
+                <nav class="space-y-2">
+                    {% if config("support_url") %}
+                        <a href="{{ config("support_url") }}" target="_blank" class="block text-sm text-muted hover:text-primary transition-colors">
+                            Get Help
+                        </a>
+                    {% endif %}
+                    <a href="/legal/terms-of-service" class="block text-sm text-muted hover:text-primary transition-colors">
+                        Terms of Service
+                    </a>
+                    <a href="/legal/privacy-policy" class="block text-sm text-muted hover:text-primary transition-colors">
+                        Privacy Policy
+                    </a>
+                    <a href="/legal/user-agreement" class="block text-sm text-muted hover:text-primary transition-colors">
+                        User Agreement
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider">Payment & Security</h4>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-primary text-sm"></i>
+                        <span class="text-xs text-muted">SSL Secured</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-lock text-primary text-sm"></i>
+                        <span class="text-xs text-muted">Secure Payments</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-primary text-sm"></i>
+                        <span class="text-xs text-muted">Instant Delivery</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <p class="text-xs font-medium text-white">Accepted Payment Methods</p>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="w-8 h-5 bg-content-light rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-paypal text-xs text-muted"></i>
+                        </div>
+                        <div class="w-8 h-5 bg-content-light rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-stripe text-xs text-muted"></i>
+                        </div>
+                        <div class="w-8 h-5 bg-content-light rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-visa text-xs text-muted"></i>
+                        </div>
+                        <div class="w-8 h-5 bg-content-light rounded flex items-center justify-center">
+                            <i class="fa-brands fa-cc-mastercard text-xs text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-center md:text-left">
+                <p class="text-sm font-medium text-white">
+                    © {{ store.name }} {{ 'now'|date('Y') }}. All Rights Reserved
+                </p>
+                <p class="text-xs text-muted mt-1">
+                    {% if store.platform == 'minecraft' %}
+                        We are not affiliated with Mojang AB.
+                    {% else %}
+                        Independent gaming community store
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="text-center md:text-right">
+                <a href="https://paynow.gg/" target="_blank" class="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors group">
+                    <span class="text-xs">Powered by</span>
+                    <div class="flex items-center gap-1">
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor" d="M68.8,155.2h98.3c21.3,0,38.7,6.5,52.4,19.2s20.4,28.5,20.4,47c0,22.5-7.9,41.2-23.6,56.5
+                            c-15.8,15.3-35.7,22.9-59.8,22.9h-45.9l-7.6,43.1H35.7L68.8,155.2z M120,246.7h29.4c6,0,11.1-2.1,15.3-6.3c4.2-4.2,6.3-9.3,6.3-15.3
+                            c0-4.9-1.6-8.8-4.6-11.8c-3.2-3-7.4-4.4-12.7-4.4H127L120,246.7z"/>
+                            <path fill="currentColor" d="M384.4,244.2h3.2v-27.1l10.9-62.1H466l-33.1,188.9h-72.8l-38.5-89h-3.2v25.7l-11.1,63.3h-67.4L273,155h72.8
+                            L384.4,244.2z"/>
+                        </svg>
+                        <span class="text-sm font-bold">PayNow</span>
+                    </div>
+                </a>
+                <a href="https://benjdzn.com" target="_blank" class="block text-xs text-muted opacity-75 mt-1">Theme created by Benj</a>
+            </div>
+        </div>
+    </div>
+</footer>

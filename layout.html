@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% include 'partials/head.html' %}
+</head>
+<body x-data="storeApp()" x-init="init()" class="text-neutral-300 view--{{page}}">
+    
+    {% if config("hero_background") != "" %}
+        <div id="appBg">
+            <div class="fade"></div>
+            <img src="{{ config("hero_background") }}">
+        </div>
+    {% endif %}
+
+    <div id="storeApp" class="min-h-screen flex flex-col">
+        {% include 'partials/hero.html' %}
+
+        <div id="content" class="with-sidebar pt-10 pb-25">
+            <div class="container flex flex-col md:flex-row md:gap-8 gap-6 mx-auto px-6 md:px-0">
+                
+                {% if notification %}
+                    <div id="notification-alert" 
+                        class="fixed top-4 right-4 z-50 bg-gradient-to-r from-red-500 to-red-600 text-white shadow-2xl rounded-lg px-4 py-3 flex items-center space-x-3 max-w-sm w-full transform transition-all duration-300 ease-out"
+                        x-data="{ show: true }" 
+                        x-show="show" 
+                        x-init="setTimeout(() => show = false, 5000)"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform translate-x-full"
+                        x-transition:enter-end="opacity-100 transform translate-x-0"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100 transform translate-x-0"
+                        x-transition:leave-end="opacity-0 transform translate-x-full">
+                        
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="flex-1">
+                            <p class="font-medium">{{ notification.message }}</p>
+                        </div>
+                        <button @click="show = false" class="text-red-100 hover:text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+        {% include 'partials/footer.html' %}
+    </div>
+    
+    {% include 'partials/modal.html' %}
+    {% include 'partials/modal_cart.html' %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://mcapi.us/scripts/minecraft.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        const server = "{{ template.server_ip }}";
+        const serverPort = '{{ template.server_port }}';
+        const discordId = "{{ template.discord_id }}";
+    </script>
+    <script src="{{ asset('app.js') }}"></script>
+</body>
+
+</html>

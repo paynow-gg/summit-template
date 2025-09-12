@@ -1,0 +1,28 @@
+<div class="bg-content rounded-xl shadow-2xl p-8 md:p-9 giftcards">
+    <form action='/module/giftcard_balance' method='post' class="space-y-6">
+        <div class="title flex gap-5">
+            <div class="w-10 h-10 cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                <i class="fa-solid text-sm fa-credit-card text-muted"></i>
+            </div>
+            <div class="text">
+                <p class="text-xs uppercase font-bold text-muted">Check your balance</p>
+                <h1 class="text-2xl font-black text-white">Giftcards</h1>
+            </div>
+        </div>
+        {% if module.data.error %}
+        <div class="p-4 mb-4 text-sm text-red-300 rounded-lg bg-red-600/10 flex gap-4 items-center justify-center text-center" role="alert">
+            {{ module.data.error }}
+        </div>
+        {% endif %}
+    
+        {% if module.data.giftCard %}
+        <div class="p-4 mb-4 text-sm text-emerald-300 rounded-lg bg-emerald-600/10 flex gap-4 items-center justify-center text-center" role="alert">
+            <p>Your gift card balance is <b>{{ module.data.giftCard.balance|money_store_currency }}</b>.</p>
+        </div>
+        {% endif %}
+        <div class="form space-y-4">
+            <input type="text" autocomplete="off" name="card_number" placeholder="Enter Code" value="{{ module.data.giftCard ? module.data.giftCard.code : '' }}" class="px-4 py-4 bg-content-light w-full rounded-xl text-center font-script outline-none text-sm"  />
+            <button class="w-full bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2">Check Balance</button>
+        </div>
+    </form>
+</div>

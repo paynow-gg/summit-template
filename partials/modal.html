@@ -1,0 +1,223 @@
+<div x-cloak x-show="modal.isOpen" 
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-50 overflow-y-auto">
+    
+    <div @click="closeModal()" 
+         class="fixed inset-0 bg-black/90 transition-opacity"></div>
+    
+    <div class="flex items-center justify-center min-h-full p-4">
+        <div x-show="modal.isOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative bg-content rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" x-data="{ showGift: false, expandedCategories: [] }">
+            
+            <button @click="closeModal()" 
+                    class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+            
+            <div x-show="modal.type === 'storeMenu'" class="p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">Store Categories</h2>
+                
+                <div class="space-y-4 max-h-[440px] overflow-y-auto modal-nav">
+                    {% if page != "home" %}
+                        <a href="/" class="blocks hidden bg-content-light rounded-xl p-4 hover:bg-primary transition-colors group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-primary group-hover:bg-white group-hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-house text-lg"></i> 
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Home</h3>
+                                    <p class="text-sm text-muted">
+                                        Back to our home page
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                    
+                    {% for navlink in navlinks %}
+                    <div class="bg-content-light rounded-xl overflow-hidden">
+                        <div class="relative">
+                            <div class="flex items-center gap-4 p-4 hover:bg-primary transition-colors group">
+                                <div class="w-12 h-12 bg-primary group-hover:bg-white group-hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                                    {% if navlink.tag_slug == 'giftcards' %}
+                                        <i class="fa-solid fa-gift text-lg"></i>
+                                    {% elseif navlink.tag_slug == 'ranks' %}
+                                        <i class="fa-solid fa-crown text-lg"></i>
+                                    {% elseif navlink.tag_slug == 'bundles' %}
+                                        <i class="fa-solid fa-box text-lg"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-star text-lg"></i>
+                                    {% endif %}
+                                </div>
+                                <a href="/products?tag={{ navlink.tag_query[0] }}" 
+                                   @click="closeModal()" 
+                                   class="flex-1 hover:text-white transition-colors">
+                                    <h3 class="font-bold">{{ navlink.name }}</h3>
+                                    <p class="text-sm text-muted">
+                                        {% if navlink.tag_slug == 'giftcards' %}
+                                            Store credit for purchases
+                                        {% elseif navlink.tag_slug == 'ranks' %}
+                                            Exclusive server privileges
+                                        {% elseif navlink.tag_slug == 'bundles' %}
+                                            Seasonal item packages
+                                        {% else %}
+                                            Other items and services
+                                        {% endif %}
+                                    </p>
+                                </a>
+                                {% if navlink.children and navlink.children|length > 0 %}
+                                    <button @click.stop="expandedCategories.includes('{{ navlink.node_id }}') ? expandedCategories = expandedCategories.filter(id => id !== '{{ navlink.node_id }}') : expandedCategories.push('{{ navlink.node_id }}')" 
+                                            class="cursor-pointer w-8 h-8 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all hover:scale-110">
+                                        <i :class="expandedCategories.includes('{{ navlink.node_id }}') ? 'fa-chevron-up' : 'fa-chevron-down'" 
+                                           class="fa-solid text-sm transition-transform duration-200"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if navlink.children and navlink.children|length > 0 %}
+                        <div x-show="expandedCategories.includes('{{ navlink.node_id }}')" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 max-h-0"
+                             x-transition:enter-end="opacity-100 max-h-96"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 max-h-96"
+                             x-transition:leave-end="opacity-0 max-h-0"
+                             class="overflow-hidden">
+                            <div class="bg-content-light/50 border-t border-white/5">
+                                {% for child in navlink.children %}
+                                <a href="/products?tag={{ child.tag_slug }}" 
+                                   @click="closeModal()" 
+                                   class="flex items-center gap-4 ml-2 p-4 hover:bg-primary/20 transition-colors group">
+                                    <div class="w-10 h-10 cursor-pointer relative overflow-hidden bg-white/10 flex items-center justify-center rounded-lg shadow-lg transition-all duration-300 hover:text-white">
+                                        <i class="fa-solid fa-external-link-alt text-muted"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-sm">{{ child.name }}</h4>
+                                        <p class="text-xs text-muted">
+                                            {% if child.tag_slug == 'upgrades' %}
+                                                Enhance your rank privileges
+                                            {% else %}
+                                                View items in this category
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    {% for custom_page in custom_pages %}
+                        {% if not custom_page.settings %}
+                            {% if custom_page.path starts with '/' %}
+                                {% set page_parsed_path = custom_page.path %}
+                            {% else %}
+                                {% set page_parsed_path = '/' ~ custom_page.path %}
+                            {% endif %}
+                            <a href="{{ page_parsed_path }}" class="block bg-content-light rounded-xl p-4 hover:bg-primary transition-colors group {% if request.path == page_parsed_path %}active{% endif %}">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-primary group-hover:bg-white group-hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-solid fa-file-lines text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold"> {{ custom_page.title }}</h3>
+                                        <p class="text-sm text-muted">
+                                            Click to view
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div x-show="modal.type === 'productInfo'" class="p-8">
+
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-primary rounded-2xl mx-auto mb-4 flex items-center justify-center relative">
+                        <i class="fa-solid fa-box text-2xl text-white"></i>
+                        <div @click="showGift = ! showGift" class="gift-icon transition-all hover:opacity-80 w-9 h-9 bg-content-light text-white flex items-center justify-center absolute top-0 right-0 -m-3 rounded-full">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                    </div>
+                    <h2 x-text="modal.data?.name || 'Product'" class="text-2xl font-bold"></h2>
+                    <div class="flex items-center flex-col justify-center gap-2">
+                        <div class="price flex gap-2 items-center justify-center">
+                            <p x-text="modal.data?.price || '$0.00'" class="text-primary text-xl font-bold mt-2"></p>
+                            <p x-text="modal.data.currency" class="text-primary text-xl font-bold mt-2"></p>
+                        </div>
+                        <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data.vat_rate">
+                            <div class="flex items-center justify-center gap-1 rounded-full bg-content-light px-3 py-1 shadow-xl">
+                                INCL.
+                                <p class="text-primary font-bold" x-text="modal.data.vat_rate"></p>
+                                VAT
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4" x-show="showGift">
+                    <div id="giftActions" class="mt-2 flex flex-col gap-2 space-y-2">
+                        <input 
+                        id="idInput"
+                        type="text" 
+                        autocomplete="off" 
+                        name="card_number" 
+                        placeholder="Enter {{ auth_provider == 'steam' ? 'SteamID64' : auth_provider }}"
+                        class="px-4 py-4 bg-content-light w-full rounded-xl text-center font-script outline-none text-sm">
+                        <div class="flex gap-3">
+                            <button @click="showGift = ! showGift" class="px-5 bg-content-light shadow-2xl py-4 rounded-xl cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button id="purchaseFromGift" @click="giftViaCart('{{ auth_provider }}'); showGift = ! showGift;"
+                                    class="w-full bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                                    Gift Package
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4" x-show="!showGift">
+                    <div>
+                        <h3 class="font-bold mb-2">Description</h3>
+                        <p x-html="modal.data?.description || 'No description available.'" class="text-muted"></p>
+                    </div>
+                    
+                    <div class="bg-content-light rounded-xl p-4">
+                        <h4 class="font-bold mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-info-circle text-primary"></i>
+                            Product Details
+                        </h4>
+                        <ul class="text-sm text-muted space-y-1">
+                            <li x-show="modal.subscription == false">• One-time purchase</li>
+                            <li>• Instant delivery</li>
+                            <li x-show="modal.subscription == false">• No subscription required</li>
+                            <li>• Full support included</li>
+                        </ul>
+                    </div>
+                    <div class="flex gap-4">
+                        <button @click="addToCart(modal.data, false); closeModal()"
+                                class="w-full bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            Add to Cart
+                        </button>
+                        <button @click="addToCart(modal.data, true); closeModal()" x-show="modal.subscription"
+                                class="w-full bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

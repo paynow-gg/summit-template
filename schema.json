@@ -1,0 +1,363 @@
+{
+  "author": "Benj",
+  "updates": {
+      "supported": true,
+      "version_check_supported": true,
+      "version": "1.0.7",
+      "github_url": "https://github.com/paynow-gg/obsidian-template",
+      "github_branch": "main"
+  },
+  "config": [
+      {
+          "header": "SEO Settings",
+          "options": [
+              {
+                  "id": "site_description",
+                  "name": "Site Description",
+                  "default": "Premium gaming items and services for your favorite games. Fast delivery, secure payments, and excellent customer support. Powered by PayNow.gg",
+                  "description": "Main description for your store (used in meta description and Open Graph)",
+                  "type": "textarea"
+              },
+              {
+                  "id": "site_keywords",
+                  "name": "Site Keywords",
+                  "default": "gaming, minecraft, game items, digital goods, gaming store",
+                  "description": "Comma-separated keywords that describe your store",
+                  "type": "textarea"
+              },
+              {
+                  "id": "og_image",
+                  "name": "Social Media Preview Image",
+                  "default": "",
+                  "description": "URL to image shown when your store is shared on social media (1200x630px recommended)",
+                  "type": "textarea"
+              },
+              {
+                  "id": "enable_structured_data",
+                  "name": "Enable Structured Data",
+                  "default": true,
+                  "description": "Add JSON-LD structured data for better search engine understanding",
+                  "type": "toggle"
+              }
+          ]
+      },
+      {
+          "header": "Template Customization",
+          "options": [
+            {
+              "id": "main-color",
+              "name": "Main Color",
+              "default": "#e5ab17",
+              "description": "Template main content color",
+              "type": "colour-picker"
+            },
+            {
+              "id": "second-color",
+              "name": "Second Color",
+              "default": "#754DD4",
+              "description": "Second color, used for gradients and hover animations",
+              "type": "colour-picker"
+            }
+          ]
+      },
+      {
+          "header": "Hero Customization",
+          "options": [
+            {
+              "id": "logo_url",
+              "name": "Logo URL",
+              "default": "https://i.imgur.com/NfqXUwH.png",
+              "description": "URL to your logo/branding.",
+              "type": "textarea"
+            },
+            {
+              "id": "logo_height",
+              "name": "Logo Height",
+              "default": "100px",
+              "description": "Determines the maximum height of the logo.",
+              "type": "textarea"
+            },
+            {
+              "id": "hero_background",
+              "name": "Background URL",
+              "default": "https://i.imgur.com/lqaSviO.jpeg",
+              "description": "URL to a background to use in the hero.",
+              "type": "textarea"
+            },
+            {
+              "id": "hero_opacity",
+              "name": "Background Opacity",
+              "default": ".25",
+              "description": "Determines the opacity of the hero background.",
+              "type": "slider",
+              "min": 0,
+              "max": 1
+            },
+            {
+              "id": "hero_position",
+              "name": "Backgropund Position",
+              "description": "Set the position for you hero background.",
+              "type": "select",
+              "default": "Middle",
+              "values": [
+                  "Top",
+                  "Middle",
+                  "Bottom"
+               ]
+           }
+          ]
+      },
+      {
+          "header": "Server Information",
+          "options": [
+            {
+                "id": "server_ip",
+                "name": "Server Address",
+                "default": "invadedlands.net",
+                "description": "This is used to gather the player count of your minecraft server.",
+                "type": "textarea"
+            },
+            {
+              "id": "server_port",
+              "name": "Server Port",
+              "default": "25565",
+              "description": "This is used to gather the player count of your minecraft server.",
+              "type": "textarea"
+            },
+            {
+                "id": "discord_id",
+                "name": "Discord ID",
+                "default": "264502963576373250",
+                "description": "This is used to ping discord online users, Found in Server Settings > Engagement.",
+                "type": "textarea"
+            },
+            {
+              "id": "discord_url",
+              "name": "Discord Link",
+              "default": "#",
+              "description": "Link to your Discord server where customers can join your community or get support.",
+              "type": "textarea"
+            }
+          ]            
+      },
+      {
+          "header": "Social Media",
+          "options": [
+            {
+                "id": "support_url",
+                "name": "Support Link",
+                "default": "",
+                "description": "URL to a website where your customers can receive support.",
+                "type": "textarea"
+            },
+            {
+              "id": "instagram_url",
+              "name": "Instagram Link",
+              "default": "#",
+              "description": "Link to your Instagram profile for sharing updates, photos, and promotions.",
+              "type": "textarea"
+            },
+            {
+              "id": "youtube_url",
+              "name": "YouTube Link",
+              "default": "#",
+              "description": "Link to your YouTube channel where you post videos or announcements.",
+              "type": "textarea"
+            },
+            {
+              "id": "tiktok_url",
+              "name": "TikTok Link",
+              "default": "#",
+              "description": "Link to your TikTok profile for short videos and promotions.",
+              "type": "textarea"
+            },
+            {
+              "id": "facebook_url",
+              "name": "Facebook Link",
+              "default": "#",
+              "description": "Link to your Facebook page for community updates and promotions.",
+              "type": "textarea"
+            },
+            {
+              "id": "twitch_url",
+              "name": "Twitch Link",
+              "default": "#",
+              "description": "Link to your Twitch channel for live streams and gaming content.",
+              "type": "textarea"
+            },
+            {
+              "id": "twitter_url",
+              "name": "Twitter Link",
+              "default": "#",
+              "description": "Link to your Twitter profile for quick updates and announcements.",
+              "type": "textarea"
+            }
+          ]            
+      },
+      {
+          "header": "Welcome Section",
+          "options": [
+              {
+                  "id": "welcome-text",
+                  "name": "Welcome Section Text",
+                  "default": "To begin shopping, please select a category from the sidebar. Users require parental consent / have to be of age to use our web store, not having parental consent while being underage will result in banishment from our server. Please note that ranks cost a one-time fee and are unlocked permanently!",
+                  "description": "The text you see on the home page.",
+                  "type": "rich-text"
+              }
+          ]
+      },
+      {
+          "header": "Support Section",
+          "options": [
+              {
+                  "id": "support-text",
+                  "name": "Support Section Text",
+                  "default": "Need any questions answered before checkout? Waited more than 20 minutes but your package still has not arrived? Ask the community/staff on Discord, or for payment support, submit a support ticket on our website.",
+                  "description": "The text you see on the home page.",
+                  "type": "rich-text"
+              }
+          ]
+      },
+      {
+          "header": "Payment Section",
+          "options": [
+              {
+                  "id": "payment-text",
+                  "name": "Payment Section Text",
+                  "default": "All payments are final and non-refundable. Attempting a chargeback or opening a PayPal dispute will result in permanent and irreversible banishment from all of our servers, and other minecraft stores.It could take between 1-20 minutes for your purchase to be credited in-game. If you are still not credited after this time period, please open a support ticket on our forums with proof of purchase and we will look into your issue.",
+                  "description": "The text you see on the home page.",
+                  "type": "rich-text"
+              }
+          ]
+      },
+      {
+        "header": "Custom Pages",
+        "options": [
+          {
+            "id": "custom_pages",
+            "name": "Page Entries",
+            "type": "nested-array",
+            "default": [],
+            "nested_options": [
+              {
+                "id": "path",
+                "name": "Page Path",
+                "default": "custom-page",
+                "description": "Make sure this path is unique",
+                "type": "textarea"
+              },
+              {
+                "id": "title",
+                "name": "Page Title",
+                "default": "",
+                "type": "textarea"
+              },
+              {
+                "id": "content",
+                "name": "Page Content",
+                "default": "",
+                "type": "rich-text"
+              },
+              {
+                "id": "icon",
+                "name": "Navigation Icon",
+                "description": "A fontawesome icon ID to show in the navbar (example: fa-circle-info)",
+                "default": "fa-circle-info",
+                "type": "textarea"
+              },
+              {
+                "id": "settings",
+                "name": "Don't show in navigation",
+                "description": "If enabled this custom page wont show in navbar",
+                "type": "toggle",
+                "default": false
+              }
+            ]
+          }
+        ]
+    },
+    {
+      "header": "Advanced SEO Settings",
+      "options": [
+          {
+              "id": "breadcrumbs_enabled",
+              "name": "Enable Breadcrumbs",
+              "default": true,
+              "description": "Show breadcrumb navigation for better SEO and user experience",
+              "type": "toggle"
+          },
+          {
+              "id": "sitemap_enabled",
+              "name": "Enable XML Sitemap",
+              "default": true,
+              "description": "Generate XML sitemap for search engines",
+              "type": "toggle"
+          },
+          {
+              "id": "robots_txt_custom",
+              "name": "Custom Robots.txt Rules",
+              "default": "",
+              "description": "Additional rules for robots.txt (one per line)",
+              "type": "textarea"
+          },
+          {
+              "id": "rich_snippets_enabled",
+              "name": "Enable Rich Snippets",
+              "default": true,
+              "description": "Add rich snippet data for products, prices, and availability",
+              "type": "toggle"
+          },
+          {
+              "id": "local_business_enabled",
+              "name": "Enable Local Business Schema",
+              "default": false,
+              "description": "Add local business structured data if you have a physical location",
+              "type": "toggle"
+          },
+          {
+              "id": "business_address",
+              "name": "Business Address",
+              "default": "",
+              "description": "Full business address (required if local business is enabled)",
+              "type": "textarea"
+          },
+          {
+              "id": "business_phone",
+              "name": "Business Phone",
+              "default": "",
+              "description": "Business phone number",
+              "type": "textarea"
+          },
+          {
+              "id": "business_hours",
+              "name": "Business Hours",
+              "default": "Mo-Su 00:00-23:59",
+              "description": "Business hours in schema.org format (e.g., Mo-Fr 09:00-17:00)",
+              "type": "textarea"
+          },
+          {
+              "id": "organization_type",
+              "name": "Organization Type",
+              "default": "OnlineStore",
+              "description": "Type of organization for structured data",
+              "type": "select",
+              "values": [
+                  "OnlineStore",
+                  "Store",
+                  "Corporation",
+                  "LocalBusiness",
+                  "GameServer",
+                  "Organization"
+              ]
+          },
+          {
+              "id": "custom_schema_data",
+              "name": "Custom Schema JSON-LD",
+              "default": "",
+              "description": "Additional custom structured data (advanced users only)",
+              "type": "textarea"
+          }
+      ]
+  }
+  ]
+}

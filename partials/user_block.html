@@ -1,0 +1,66 @@
+{% if customer == null %}
+    <a href="/auth/sign-in" class="user-block w-full md:w-auto flex flex-1 md:flex-none group cursor-pointer relative 
+    ml-auto flex gap-5 items-center justify-end md:justify-center text-3xl overflow-hidden h-[112px] md:h-[132px] rounded-tr-xl rounded-br-xl">
+        <div class="hidden md:block bg-gradient-to-l from-transparent to-white/5 ml-4 -skew-x-12 absolute left-0 -right-10 bottom-0 top-0 pointer-none"></div>
+        
+        <div class="custom-avatar w-12 h-12 md:ml-14 md:order-0 order-10 flex items-center justify-center bg-white/10 rounded-full">
+            {% if store.game == "minecraft" %}
+                <img src="https://crafatar.com/avatars/8667ba71b85a4004af54457a9734eed7" alt="Default Minecraft Avatar">
+            {% else %}
+                <i class="fa-solid fa-user text-white text-2xl"></i>
+            {% endif %}
+        </div>
+
+        <div class="text relative text-right md:text-left transition-all group-hover:-translate-y-[3px] duration-200 md:pr-10">
+            <h2 class="text-xl font-bold text-white">Guest</h2>
+            <p class="text-sm text-muted font-bold">Click to login</p>
+        </div>
+    </a>
+{% else %}
+    {% if page == "cart" %}
+        <a href="/auth/sign-out" class="user-block w-full md:w-auto flex flex-1 md:flex-none group cursor-pointer relative 
+        ml-auto flex gap-5 items-center justify-end md:justify-center text-3xl overflow-hidden h-[112px] md:h-[132px] rounded-tr-xl rounded-br-xl">
+            <div class="hidden md:block bg-gradient-to-l from-transparent to-white/5 ml-4  w-[120px] -skew-x-12 absolute left-0  bottom-0 top-0 pointer-none"></div>
+            
+            <div class="custom-avatar w-12 h-12 md:ml-14 md:order-0 order-10 flex items-center justify-center bg-white/10 rounded-full">
+                {% if customer.profile.avatar_url %}
+                    <img src="{{customer.profile.avatar_url}}" alt="{{customer.profile.name}}">
+                {% else %}
+                    {% if store.game == "minecraft" %}
+                        <img src="https://crafatar.com/avatars/8667ba71b85a4004af54457a9734eed7" alt="Minecraft Avatar">
+                    {% else %}
+                        <i class="fa-solid fa-user text-white text-2xl"></i>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="text relative text-right md:text-left transition-all group-hover:-translate-y-[3px] duration-200 md:pr-10">
+                <h2 class="text-xl font-bold text-white">{{customer.profile.name}}</h2>
+                <p class="text-xs md:text-sm text-muted font-bold">Click to logout</p>
+            </div>
+        </a>
+    {% else %}
+        <a @click="toggleCart()" 
+        class="user-block w-full md:w-auto flex flex-1 md:flex-none group cursor-pointer relative 
+        ml-auto flex gap-5 items-center justify-end md:justify-center text-3xl overflow-hidden h-[112px] md:h-[132px] rounded-tr-xl rounded-br-xl">
+            <div class="hidden md:block bg-gradient-to-l from-transparent to-white/5 ml-4  w-[120px] -skew-x-12 absolute left-0  bottom-0 top-0 pointer-none"></div>
+            
+            <div class="custom-avatar w-12 h-12 md:ml-14 md:order-0 order-10 flex items-center justify-center bg-white/10 rounded-full">
+                {% if customer.profile.avatar_url %}
+                    <img src="{{customer.profile.avatar_url}}" alt="{{customer.profile.name}}">
+                {% else %}
+                    {% if store.game == "minecraft" %}
+                        <img src="https://crafatar.com/avatars/8667ba71b85a4004af54457a9734eed7" alt="Minecraft Avatar">
+                    {% else %}
+                        <i class="fa-solid fa-user text-white text-2xl"></i>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="text relative text-right md:text-left transition-all group-hover:-translate-y-[3px] duration-200 md:pr-10">
+                <h2 class="text-xl font-bold text-white">{{customer.profile.name}}</h2>
+                <p class="text-xs md:text-sm text-muted font-bold">View your cart</p>
+            </div>
+        </a>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,193 @@
+
+body {
+    font-family: 'BR Omny', sans-serif;
+    background: var(--background-color);
+}
+.container {
+    max-width: var(--content-width) !important;
+}
+
+/* App Colors */
+.bg-content {
+    background: var(--content-color);
+}
+.bg-content-light {
+    background: var(--content-light-color);
+}
+.bg-secondary {
+    background:var(--secondary-color);
+}
+.bg-primary {
+    background:var(--primary-color);
+}
+.text-primary {
+    color:var(--primary-color);
+}
+.hover\:text-primary {
+    &:hover {
+        @media (hover: hover) {
+            color: var(--primary-color);
+        }
+    }
+}
+.text-muted {
+    color:var(--text-muted);
+}
+.custom-avatar {
+    overflow: hidden;
+    border-radius: 10px;
+}
+/* Footer */
+#paynow {max-width: 38px;margin: 0 auto;padding-top: 5px;}
+#paynow path {
+    fill: #ffffff;
+}
+.border-content-light {
+    border-color: rgb(255 255 255 / 10%) !important;
+}
+
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+}
+.btn-shine:hover:before {
+    animation: shine .5s linear;
+    background-color: rgba(255, 255, 255, 10%);
+    content: "";
+    height: 300px;
+    left: -100px;
+    position: absolute;
+    top: -100px;
+    transform: rotate(30deg);
+    width: 10%;
+}
+
+@keyframes shine {
+    0% {
+        left: -100px
+    }
+
+    to {
+        left: calc(100% + 100px)
+    }
+}
+
+[x-cloak] {
+    display:none !important;
+}
+
+#appBg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    max-height: 400px;
+    overflow: hidden;
+    opacity:  var(--hero-opacity);
+}
+
+#appBg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--hero-position);
+}
+
+#storeApp {
+    position: relative;
+    z-index: 5;
+}
+
+#appBg .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: linear-gradient(0deg, var(--background-color), transparent);
+    bottom: 0;
+}
+.modal-nav::-webkit-scrollbar {
+    width: 8px !important;
+    border-radius:100px !important;
+    overflow:hidden;
+  }
+  
+  .modal-nav::-webkit-scrollbar-track {
+    background: #3f3f46;
+    border-radius:100px !important;
+  }
+  
+  .modal-nav::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius:100px !important;
+  }
+  
+  .modal-nav i {
+      color: white;
+  }
+  
+  .modal-nav {
+    padding-right: 15px !important;
+    padding-left:5px !important;
+  }
+.card-loading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--background-color);
+    z-index: 5;
+    opacity: .85;
+}
+#notification-alert .font-medium {
+    text-transform: capitalize;
+}
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.gift-icon {
+    box-shadow: 0px 0px 20px #29292ed6;
+    cursor: pointer;
+    background: #ffffff29;
+    font-size:14px !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid #ffffff36;
+}
+.sidebar .top-customer {
+    order: 2;
+}
+.sidebar .recent-payments {
+    order: 3;
+}
+.sidebar .text-block {
+    order: 15;
+}
+.sidebar .giftcards {
+    order: 10;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+@media only screen and (max-width: 768px) {
+    .sidebar .store-menu-toggle {
+        display: none !important;
+    }
+    .view--home #mobile-secondary {
+        display: none !important;
+    }
+}

@@ -1,0 +1,275 @@
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+
+body {
+    font-family: 'BR Omny', sans-serif;
+    background: var(--background-color);
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ==========================================================================
+   LAYOUT COMPONENTS
+   ========================================================================== */
+
+.container {
+    max-width: var(--content-width) !important;
+}
+
+/* ==========================================================================
+   BACKGROUND UTILITIES
+   ========================================================================== */
+
+.bg-content {
+    background: var(--content-color);
+}
+
+.bg-content-light {
+    background: var(--content-light-color);
+}
+
+.bg-secondary {
+    background: var(--secondary-color);
+}
+
+.bg-primary {
+    background: var(--primary-color);
+}
+
+/* ==========================================================================
+   TEXT UTILITIES
+   ========================================================================== */
+
+.text-primary {
+    color: var(--primary-color);
+}
+
+.hover\:text-primary {
+    &:hover {
+        @media (hover: hover) {
+            color: var(--primary-color);
+        }
+    }
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   BORDER UTILITIES
+   ========================================================================== */
+
+.border-content-light {
+    border-color: rgb(255 255 255 / 10%) !important;
+}
+
+/* ==========================================================================
+   BUTTON COMPONENTS
+   ========================================================================== */
+
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shine:hover:before {
+    animation: shine 0.5s linear;
+    background-color: rgba(255, 255, 255, 10%);
+    content: "";
+    height: 300px;
+    left: -100px;
+    position: absolute;
+    top: -100px;
+    transform: rotate(30deg);
+    width: 10%;
+}
+
+/* ==========================================================================
+   AVATAR COMPONENTS
+   ========================================================================== */
+
+.custom-avatar {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* ==========================================================================
+   SPECIFIC COMPONENTS
+   ========================================================================== */
+
+/* Payment Icon */
+#paynow {
+    max-width: 38px;
+    margin: 0 auto;
+    padding-top: 5px;
+}
+
+#paynow path {
+    fill: #ffffff;
+}
+
+/* App Background */
+#appBg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    max-height: 400px;
+    overflow: hidden;
+    opacity: var(--hero-opacity);
+}
+
+#appBg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--hero-position);
+}
+
+#appBg .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: linear-gradient(0deg, var(--background-color), transparent);
+    bottom: 0;
+}
+
+#storeApp {
+    position: relative;
+    z-index: 5;
+}
+
+/* Gift Icon */
+.gift-icon {
+    box-shadow: 0px 0px 20px #29292ed6;
+    cursor: pointer;
+    background: #ffffff29;
+    font-size: 14px !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid #ffffff36;
+}
+
+/* ==========================================================================
+   MODAL COMPONENTS
+   ========================================================================== */
+
+.modal-nav {
+    padding-right: 15px !important;
+    padding-left: 5px !important;
+}
+
+.modal-nav::-webkit-scrollbar {
+    width: 8px !important;
+    border-radius: 100px !important;
+    overflow: hidden;
+}
+
+.modal-nav::-webkit-scrollbar-track {
+    background: #3f3f46;
+    border-radius: 100px !important;
+}
+
+.modal-nav::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 100px !important;
+}
+
+.modal-nav i {
+    color: white;
+}
+
+/* ==========================================================================
+   LOADING STATES
+   ========================================================================== */
+
+.card-loading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--background-color);
+    z-index: 5;
+    opacity: 0.85;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+/* ==========================================================================
+   NOTIFICATION COMPONENTS
+   ========================================================================== */
+
+#notification-alert .font-medium {
+    text-transform: capitalize;
+}
+
+/* ==========================================================================
+   SIDEBAR LAYOUT
+   ========================================================================== */
+
+.sidebar .top-customer {
+    order: 2;
+}
+
+.sidebar .recent-payments {
+    order: 3;
+}
+
+.sidebar .giftcards {
+    order: 10;
+}
+
+.sidebar .text-block {
+    order: 15;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes shine {
+    0% {
+        left: -100px;
+    }
+    to {
+        left: calc(100% + 100px);
+    }
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   MEDIA QUERIES
+   ========================================================================== */
+
+@media only screen and (max-width: 768px) {
+    .sidebar .store-menu-toggle {
+        display: none !important;
+    }
+    
+    .view--home #mobile-secondary {
+        display: none !important;
+    }
+}

@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% include 'partials/mobile-navigation.html' %}
+
+<div class="sidebar flex-1 md:flex-none md:max-w-[355px] w-full flex flex-col md:gap-8 gap-6 order-10 md:order-0">
+    {% include 'partials/sidebar.html' %}
+</div>
+
+<div class="inner-content flex flex-1 flex-col md:gap-8 gap-6">
+    {% include 'partials/content-header.html' %}
+
+    <div class="bg-content rounded-xl shadow-2xl p-10 md:p-12">
+        <div class="left space-y-4">
+            <div class="title">
+                <p class="text-sm uppercase font-bold text-primary">Welcome to the official</p>
+                <h1 class="text-4xl font-black text-white uppercase mt-2">{{ store.name }} Store</h1>
+            </div>
+            <p class="text-muted">
+                {{ config("welcome-text") |raw }}
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-content rounded-xl shadow-2xl p-10 md:p-12 space-y-12">
+        <section class="space-y-5">
+            <div class="title flex gap-5">
+                <div class="w-12 h-12 text-lg cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                    <i class="fa-solid fa-life-ring text-muted"></i>
+                </div>
+                <div class="text">
+                    <p class="text-xs uppercase font-bold text-muted">Need assistance?</p>
+                    <h1 class="text-3xl font-black text-white">Support</h1>
+                </div>
+            </div>
+            <p class="text-muted">
+                {{ config("support-text") |raw }}
+            </p>
+            <div class="buttons flex flex-col md:flex-row gap-4 md:gap-6">
+            {% if config("discord_url") != "" %}
+                <a href="{{ config("discord_url") }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Discord Server</a>
+            {% endif %}
+            {% if config("support_url") != "" %}
+                <a href="{{ config("support_url") }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Contact Us</a>
+            {% endif %}
+            </div>
+        </section>
+    </div>
+    <div class="bg-content rounded-xl shadow-2xl p-10 md:p-12 space-y-12">
+        <section class="space-y-5">
+            <div class="title flex gap-5">
+                <div class="w-12 h-12 text-lg cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
+                    <i class="fa-solid fa-gavel text-muted"></i>
+                </div>
+                <div class="text">
+                    <p class="text-xs uppercase font-bold text-muted">Payment Information</p>
+                    <h1 class="text-3xl font-black text-white">Refund Policy</h1>
+                </div>
+            </div>
+            <p class="text-muted">
+                {{ config("payment-text") |raw }}
+            </p>
+            <div class="buttons flex flex-col md:flex-row gap-4 md:gap-6">
+                <button class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Terms and Conditions</button>
+                <button class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Privacy Policy</button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="border-top home-content hidden">
+    {% include 'svgs/stripes.html' %}
+
+    <div class="home-content-sec content-field">
+        <h1 class="home-content-tit">{{ store.name }}</h1>
+
+        <div class="home-content-text !max-w-none !prose !prose-zinc !prose-invert">
+            {{ template.index|raw }}
+        </div>
+    </div>
+</div>
+{% endblock %}
