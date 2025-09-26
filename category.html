@@ -28,7 +28,12 @@
                                 currency: '{{ store.currency }}',
                                 isSubscription: {{ product.allow_subscription ? 'true' : 'false' }},
                                 vat_rate: '{{ product.pricing.vat_rate }}',
-                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }}
+                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
+                                trial: {
+                                    enabled: {{ product.trial.eligible ? 'true' : 'false'}},
+                                    period_value: '{{ product.trial.period_value|default('') }}',
+                                    period_scale: '{{ product.trial.period_scale|default('') }}'
+                                }
                     })" 
                 class="relative h-48 bg-content-light flex items-center justify-center cursor-pointer overflow-hidden group-hover:bg-primary transition-colors duration-300">
                 
@@ -68,7 +73,12 @@
                                 currency: '{{ store.currency }}',
                                 isSubscription: {{ product.allow_subscription ? 'true' : 'false' }},
                                 vat_rate: '{{ product.pricing.vat_rate }}',
-                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }}
+                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
+                                trial: {
+                                    enabled: {{ product.trial.eligible ? 'true' : 'false'}},
+                                    period_value: '{{ product.trial.period_value|default('') }}',
+                                    period_scale: '{{ product.trial.period_scale|default('') }}'
+                                }
                             })" 
                         class="text-xl font-bold text-white mb-3 cursor-pointer hover:text-primary transition-colors">
                         {{ product.name }}
@@ -106,7 +116,12 @@
                                 currency: '{{ store.currency }}',
                                 isSubscription: {{ product.allow_subscription ? 'true' : 'false' }},
                                 vat_rate: '{{ product.pricing.vat_rate }}',
-                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }}
+                                inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
+                                trial: {
+                                    enabled: {{ product.trial.eligible ? 'true' : 'false'}},
+                                    period_value: '{{ product.trial.period_value|default('') }}',
+                                    period_scale: '{{ product.trial.period_scale|default('') }}'
+                                }
                             })" 
                             class="cursor-pointer flex-1 bg-content-light text-white rounded-xl py-3 px-4 font-medium hover:bg-primary transition-all duration-200 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-eye text-sm"></i>

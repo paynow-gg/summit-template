@@ -159,12 +159,12 @@
                     <div class="flex items-center flex-col justify-center gap-2">
                         <div class="price flex gap-2 items-center justify-center">
                             <p x-text="modal.data?.price || '$0.00'" class="text-primary text-xl font-bold mt-2"></p>
-                            <p x-text="modal.data.currency" class="text-primary text-xl font-bold mt-2"></p>
+                            <p x-text="modal.data?.currency || ''"></p>
                         </div>
-                        <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data.vat_rate">
+                        <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data?.vat_rate">
                             <div class="flex items-center justify-center gap-1 rounded-full bg-content-light px-3 py-1 shadow-xl">
                                 INCL.
-                                <p class="text-primary font-bold" x-text="modal.data.vat_rate"></p>
+                                <p class="text-primary font-bold" x-text="modal.data?.vat_rate || ''"></p>
                                 VAT
                             </div>
                         </div>
@@ -206,7 +206,17 @@
                             <li>• Full support included</li>
                         </ul>
                     </div>
-                    <div class="flex gap-4">
+                    <div x-show="modal.data?.trial.enabled">
+                        <button 
+                            @click="addToCart(modal.data, true, { period_value: modal.data?.trial?.period_value, period_scale: modal.data?.trial?.period_scale }) ; closeModal()"
+                            class="w-full col-span-2 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+
+                            <span x-text="modal.data?.trial?.period_value || ''"></span>
+                            <span x-text="modal.data?.trial?.period_scale || ''"></span>
+                            Free Trial
+                        </button>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-4">
                         <button @click="addToCart(modal.data, false); closeModal()"
                                 class="w-full bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Add to Cart
