@@ -13,17 +13,17 @@
         <div class="grid grid-cols-5 gap-5">
                 {% for order in module.data.orders|slice(0, module.data.settings.displayLimit) %}
                     <div 
-                    x-data="tooltip('{{ order.customer.steam.name ?? order.customer.name }} {% if module.data.settings.displayPurchasedProduct %}{% for line in order.lines|slice(0, 1) %}| {{ line.product_name }}{% endfor %}{% endif %}{% if module.data.settings.displayPriceOfPurchase %} | {{ order.total_amount != 0 ? order.total_amount | money_store_currency : "FREE" }}{%endif%}')" 
+                    x-data="tooltip('{{ order.customer.profile.name ?? order.customer.name }} {% if module.data.settings.displayPurchasedProduct %}{% for line in order.lines|slice(0, 1) %}| {{ line.product_name }}{% endfor %}{% endif %}{% if module.data.settings.displayPriceOfPurchase %} | {{ order.total_amount != 0 ? order.total_amount | money_store_currency : "FREE" }}{%endif%}')" 
                         @mouseenter="show = true" 
                         @mouseleave="show = false"
                         class="relative flex">
                         <slot>
                             <div class="w-full h-10 cursor-pointer relative overflow-hidden bg-content-light flex items-center justify-center rounded-lg shadow-lg transition-all hover:-translate-y-1 duration-300 hover:text-primary">
-                                    {% if customer.steam.avatarUrl  %}
-                                        <img src="{{ order.customer.steam.avatarUrl ?: defaultAvatar }}" alt="Avatar">
-                                    {% else %}
-                                        <img src="{{ order.customer.minecraft.avatar_url }}" alt="Avatar">
-                                    {% endif %}
+                                {% if customer.steam.avatar_url  %}
+                                    <img src="{{ order.customer.steam.avatar_url ?: defaultAvatar }}" alt="Avatar">
+                                {% else %}
+                                    <img src="{{ order.customer.profile.avatar_url }}" alt="Avatar">
+                                {% endif %}
                             </div>
                         </slot>
                         <div x-cloak x-show="show"
