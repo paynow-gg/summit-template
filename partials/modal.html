@@ -161,11 +161,11 @@
                             <p x-text="modal.data?.price || '$0.00'" class="text-primary text-xl font-bold mt-2"></p>
                             <p x-text="modal.data?.currency || ''"></p>
                         </div>
-                        <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data?.vat_rate">
+                        <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data?.vatRatePercentage">
                             <div class="flex items-center justify-center gap-1 rounded-full bg-content-light px-3 py-1 shadow-xl">
                                 INCL.
-                                <p class="text-primary font-bold" x-text="modal.data?.vat_rate || ''"></p>
-                                VAT
+                                <p class="text-primary font-bold" x-text="modal.data?.vatRatePercentage || ''"></p>%
+                                <p x-text="modal.data?.vatRateName || ''"></p>
                             </div>
                         </div>
                     </div>
