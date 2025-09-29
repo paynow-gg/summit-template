@@ -5,12 +5,12 @@
                 {% if customer.steam.avatarUrl  %}
                     <img src="{{ customer.steam.avatarUrl ?: defaultAvatar }}" alt="Avatar">
                 {% else %}
-                    <img src="{{ customer.minecraft.avatar_url }}" alt="Avatar">
+                    <img src="{{ customer.profile.avatar_url }}" alt="Avatar">
                 {% endif %}
             </div>
             <div class="title">
                 <p class="text-xs uppercase font-bold text-muted">Top Donator</p>
-                <h1 class="text-2xl font-black text-white">{{ customer.steam.name ?? customer.name }}</h1>
+                <h1 class="text-2xl font-black text-white">{{ customer.profile.name ?? customer.name }}</h1>
             </div>
         </div>
     </div>
