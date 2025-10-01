@@ -67,6 +67,7 @@ jobs:
           echo "Uploading file to storage..."
           HTTP_CODE=$(curl -w "%{http_code}" -o /dev/null -X PUT "$UPLOAD_URL" \
             -H "Content-Type: $CONTENT_TYPE" \
+            -H "Content-Disposition: attachment; filename=\"$FILE_NAME\"" \
             --data-binary "@$FILE_PATH")
           
           if [ "$HTTP_CODE" != "200" ]; then
