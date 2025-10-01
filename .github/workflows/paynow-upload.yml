@@ -55,8 +55,8 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{\"file_name\":\"$FILE_NAME\",\"file_content_type\":\"$CONTENT_TYPE\",\"description\":\"$FILE_DESCRIPTION\"}")
           
-          UPLOAD_URL=$(echo "$START_RESPONSE" | jq -r '.upload_url')
-          FILE_ID=$(echo "$START_RESPONSE" | jq -r '.id')
+          UPLOAD_URL=$(echo "$START_RESPONSE" | jq -r '.upload_signed_url')
+          FILE_ID=$(echo "$START_RESPONSE" | jq -r '.downloadable_file_id')
           
           if [ -z "$UPLOAD_URL" ] || [ "$UPLOAD_URL" = "null" ]; then
             echo "Failed to get upload URL"
