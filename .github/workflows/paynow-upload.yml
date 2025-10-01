@@ -1,0 +1,81 @@
+name: Upload to PayNow Downloadable Files
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create ZIP archive
+        run: |
+          zip -r release.zip . -x "*.git*" ".github/*"
+          ls -lh release.zip
+
+      - name: Upload to PayNow
+        env:
+          PAYNOW_API_KEY: ${{ secrets.PAYNOW_API_KEY }}
+          PAYNOW_STORE_ID: ${{ secrets.PAYNOW_STORE_ID }}
+          PAYNOW_PRODUCT_ID: ${{ secrets.PAYNOW_PRODUCT_ID }}
+          FILE_PATH: 'release.zip'
+          FILE_DESCRIPTION: 'Source code release'
+        run: |
+          set -e
+          
+          echo "Fetching existing downloadable files..."
+          EXISTING_FILES=$(curl -s -X GET \
+            "https://api.paynow.gg/v1/stores/${PAYNOW_STORE_ID}/products/${PAYNOW_PRODUCT_ID}/downloadable-files" \
+            -H "Authorization: APIKey ${PAYNOW_API_KEY}")
+          
+          echo "Deleting existing files..."
+          echo "$EXISTING_FILES" | jq -r '.[].id' | while read -r FILE_ID; do
+            if [ -n "$FILE_ID" ]; then
+              echo "Deleting file: $FILE_ID"
+              curl -s -X DELETE \
+                "https://api.paynow.gg/v1/stores/${PAYNOW_STORE_ID}/products/${PAYNOW_PRODUCT_ID}/downloadable-files/${FILE_ID}" \
+                -H "Authorization: APIKey ${PAYNOW_API_KEY}"
+            fi
+          done
+          
+          echo "Starting new file upload..."
+          FILE_NAME=$(basename "$FILE_PATH")
+          CONTENT_TYPE="application/zip"
+          
+          START_RESPONSE=$(curl -s -X POST \
+            "https://api.paynow.gg/v1/stores/${PAYNOW_STORE_ID}/products/${PAYNOW_PRODUCT_ID}/downloadable-files" \
+            -H "Authorization: APIKey ${PAYNOW_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"file_name\":\"$FILE_NAME\",\"file_content_type\":\"$CONTENT_TYPE\",\"description\":\"$FILE_DESCRIPTION\"}")
+          
+          UPLOAD_URL=$(echo "$START_RESPONSE" | jq -r '.upload_url')
+          FILE_ID=$(echo "$START_RESPONSE" | jq -r '.id')
+          
+          if [ -z "$UPLOAD_URL" ] || [ "$UPLOAD_URL" = "null" ]; then
+            echo "Failed to get upload URL"
+            echo "$START_RESPONSE"
+            exit 1
+          fi
+          
+          echo "Uploading file to storage..."
+          HTTP_CODE=$(curl -w "%{http_code}" -o /dev/null -X PUT "$UPLOAD_URL" \
+            -H "Content-Type: $CONTENT_TYPE" \
+            --data-binary "@$FILE_PATH")
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Upload failed with HTTP code: $HTTP_CODE"
+            exit 1
+          fi
+          
+          echo "Finalizing upload..."
+          curl -s -X POST \
+            "https://api.paynow.gg/v1/stores/${PAYNOW_STORE_ID}/products/${PAYNOW_PRODUCT_ID}/downloadable-files/${FILE_ID}/finish" \
+            -H "Authorization: APIKey ${PAYNOW_API_KEY}"
+          
+          echo "Upload complete!"
