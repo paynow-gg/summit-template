@@ -155,10 +155,10 @@
                             <i class="fa-solid fa-gift"></i>
                         </div>
                     </div>
-                    <h2 x-text="modal.data?.name || 'Product'" class="text-2xl font-bold"></h2>
+                    <h2 x-text="modal.data?.name || 'Product'" class="text-2xl font-bold text-white"></h2>
                     <div class="flex items-center flex-col justify-center gap-2">
-                        <div class="price flex gap-2 items-center justify-center">
-                            <p x-text="modal.data?.price || '$0.00'" class="text-primary text-xl font-bold mt-2"></p>
+                        <div class="price flex gap-2 items-center justify-center mt-2">
+                            <p x-text="modal.data?.price || '$0.00'" class="text-primary text-xl font-bold"></p>
                             <p x-text="modal.data?.currency || ''"></p>
                         </div>
                         <div class="vat flex items-center justify-center gap-1 text-muted text-xs mt-2" x-show="modal.data?.vatRatePercentage">
@@ -189,22 +189,23 @@
                     </div>
                 </div>
                 <div class="space-y-4" x-show="!showGift">
-                    <div>
-                        <h3 class="font-bold mb-2">Description</h3>
-                        <p x-html="modal.data?.description || 'No description available.'" class="text-muted"></p>
-                    </div>
-                    
                     <div class="bg-content-light rounded-xl p-4">
-                        <h4 class="font-bold mb-2 flex items-center gap-2">
+                        <h4 class="font-bold mb-2 flex items-center gap-2 text-white">
                             <i class="fa-solid fa-info-circle text-primary"></i>
-                            Product Details
+                            Product Description
                         </h4>
-                        <ul class="text-sm text-muted space-y-1">
-                            <li x-show="modal.subscription == false">• One-time purchase</li>
-                            <li>• Instant delivery</li>
-                            <li x-show="modal.subscription == false">• No subscription required</li>
-                            <li>• Full support included</li>
-                        </ul>
+                        <div x-html="modal.data?.description || 'No description available.'" class="text-muted prose prose-invert prose-sm max-w-none
+                                                    prose-headings:text-white prose-headings:font-bold prose-headings:mb-2 prose-headings:mt-4
+                                                    prose-p:mb-3 prose-p:leading-relaxed
+                                                    prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                                                    prose-strong:text-white prose-strong:font-bold
+                                                    prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-3
+                                                    prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-3
+                                                    prose-li:mb-1
+                                                    prose-code:text-primary prose-code:bg-content-light prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                                                    prose-pre:bg-content-light prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto
+                                                    prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic
+                                                    prose-img:rounded-lg prose-img:shadow-lg"></div>
                     </div>
                     <div x-show="modal.data?.trial.enabled">
                         <button 

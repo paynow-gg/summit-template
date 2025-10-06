@@ -217,16 +217,25 @@ function storeApp() {
                 this.redirectToLogin("Please log in to modify cart");
                 return;
             }
-            
-            // Check for existing subscription in cart
+
+            // Check if product is in stock
+            if (product.inStock === false) {
+                this.showNotification(`${product.name} is out of stock`, "error");
+                return;
+            }
+
+            // Check for existing subscription of the same product in cart
             if (isSubscription) {
-                const alreadySub = this.cart.items.find((item) => item.subscription === true);
+                const alreadySub = this.cart.items.find((item) => item.subscription === true && item.id === product.id);
                 if (alreadySub) {
                     this.showNotification(
-                        `You already have a subscription in your cart (${alreadySub.name}). Remove it first before adding another.`,
+                        `${product.name} subscription is already in your cart.`,
                         "warning"
                     );
                     this.cart.isOpen = true;
+                    setTimeout(() => {
+                        this.cart.isLoading = false;
+                    }, 1000);
                     document.body.style.overflow = "hidden";
                     return;
                 }
@@ -241,6 +250,9 @@ function storeApp() {
                         "warning"
                     );
                     this.cart.isOpen = true;
+                    setTimeout(() => {
+                        this.cart.isLoading = false;
+                    }, 1000);
                     document.body.style.overflow = "hidden";
                     return;
                 }
@@ -256,6 +268,9 @@ function storeApp() {
                 } else {
                     this.showNotification(`${product.name} is already in your cart.`, "warning");
                     this.cart.isOpen = true;
+                    setTimeout(() => {
+                        this.cart.isLoading = false;
+                    }, 1000);
                     document.body.style.overflow = "hidden";
                     return;
                 }
@@ -286,22 +301,12 @@ function storeApp() {
                 
                 const query = params.toString();
                 const url = `/cart/add/${product.slug}${query ? "?" + query : ""}`;
-                
-                // For subscriptions or trials, redirect directly to checkout
-                if (isSubscription || isTrial) {
-                    await fetch(url, {
-                        method: "GET",
-                        headers: { "X-Requested-With": "XMLHttpRequest" }
-                    });
-                    window.location.href = "/cart/checkout";
-                    return;
-                }
-                
+
                 const response = await fetch(url, {
                     method: "GET",
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
-                
+
                 if (response.ok) {
                     this.cart.items.push({
                         id: product.id,
@@ -313,12 +318,12 @@ function storeApp() {
                         subscription: isSubscription,
                         trial: isTrial || false
                     });
-                    
+
                     this.showNotification(`${product.name} added to your cart!`, "success");
                     this.cart.isOpen = true;
                     this.cart.isLoading = true;
                     document.body.style.overflow = "hidden";
-                    
+
                     setTimeout(() => {
                         this.cart.isLoading = false;
                     }, 1000);
