@@ -144,51 +144,44 @@
           "header": "Social Media",
           "options": [
             {
-                "id": "support_url",
-                "name": "Support Link",
-                "default": "",
-                "description": "URL to a website where your customers can receive support.",
-                "type": "textarea"
-            },
-            {
               "id": "instagram_url",
               "name": "Instagram Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your Instagram profile for sharing updates, photos, and promotions.",
               "type": "textarea"
             },
             {
               "id": "youtube_url",
               "name": "YouTube Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your YouTube channel where you post videos or announcements.",
               "type": "textarea"
             },
             {
               "id": "tiktok_url",
               "name": "TikTok Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your TikTok profile for short videos and promotions.",
               "type": "textarea"
             },
             {
               "id": "facebook_url",
               "name": "Facebook Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your Facebook page for community updates and promotions.",
               "type": "textarea"
             },
             {
               "id": "twitch_url",
               "name": "Twitch Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your Twitch channel for live streams and gaming content.",
               "type": "textarea"
             },
             {
               "id": "twitter_url",
               "name": "Twitter Link",
-              "default": "#",
+              "default": "",
               "description": "Link to your Twitter profile for quick updates and announcements.",
               "type": "textarea"
             }
