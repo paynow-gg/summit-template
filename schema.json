@@ -66,7 +66,7 @@
             {
               "id": "logo_url",
               "name": "Logo URL",
-              "default": "https://i.imgur.com/NfqXUwH.png",
+              "default": "https://cdn.paynow.gg/images/templates/summit/summit-logo.png",
               "description": "URL to your logo/branding.",
               "type": "textarea"
             },
@@ -80,7 +80,7 @@
             {
               "id": "hero_background",
               "name": "Background URL",
-              "default": "https://i.imgur.com/lqaSviO.jpeg",
+              "default": "https://cdn.paynow.gg/images/templates/summit/summit-bg.jpeg",
               "description": "URL to a background to use in the hero.",
               "type": "textarea"
             },
@@ -95,7 +95,7 @@
             },
             {
               "id": "hero_position",
-              "name": "Backgropund Position",
+              "name": "Background Position",
               "description": "Set the position for you hero background.",
               "type": "select",
               "default": "Middle",
