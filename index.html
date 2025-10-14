@@ -41,8 +41,8 @@
             {% if config("discord_url") != "" %}
                 <a href="{{ config("discord_url") }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Discord Server</a>
             {% endif %}
-            {% if config("support_url") != "" %}
-                <a href="{{ config("support_url") }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Contact Us</a>
+            {% if store.support_url != "" %}
+                <a href="{{ store.support_url }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Contact Us</a>
             {% endif %}
             </div>
         </section>
