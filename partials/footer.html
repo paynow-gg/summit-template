@@ -80,8 +80,8 @@
             <div class="space-y-4">
                 <h4 class="text-sm font-bold text-white uppercase tracking-wider">Support</h4>
                 <nav class="space-y-2">
-                    {% if config("support_url") %}
-                        <a href="{{ config("support_url") }}" target="_blank" class="block text-sm text-muted hover:text-primary transition-colors">
+                    {% if store.support_url %}
+                        <a href="{{ store.support_url }}" target="_blank" class="block text-sm text-muted hover:text-primary transition-colors">
                             Get Help
                         </a>
                     {% endif %}
