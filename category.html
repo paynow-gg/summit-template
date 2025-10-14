@@ -73,7 +73,8 @@
                                 onSale: {{ product.pricing.active_sale ? 'true' : 'false' }},
                                 currency: '{{ store.currency }}',
                                 isSubscription: {{ product.allow_subscription ? 'true' : 'false' }},
-                                vat_rate: '{{ product.pricing.vat_rate }}',
+                                vatRatePercentage: '{{ product.pricing.vat_rate.percentage }}',
+                                vatRateName: '{{ product.pricing.vat_rate.vat_abbreviation }}',
                                 inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
                                 trial: {
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
@@ -116,7 +117,8 @@
                                 onSale: {{ product.pricing.active_sale ? 'true' : 'false' }},
                                 currency: '{{ store.currency }}',
                                 isSubscription: {{ product.allow_subscription ? 'true' : 'false' }},
-                                vat_rate: '{{ product.pricing.vat_rate }}',
+                                vatRatePercentage: '{{ product.pricing.vat_rate.percentage }}',
+                                vatRateName: '{{ product.pricing.vat_rate.vat_abbreviation }}',
                                 inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
                                 trial: {
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
