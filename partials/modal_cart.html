@@ -88,7 +88,9 @@
                                     </span>
                                 </div>
 
-                                <span x-show="item.subscription" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">Renews Monthly</span>
+                                <span x-show="item.subscription && !item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg--900 text-green-300">Renews Monthly</span>
+                                <span x-show="item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">Free Trial</span>
+
                                 
                                 <div x-show="item.isGift" class="text-xs text-muted mt-1 bg-content rounded-lg p-2">
                                     <div class="flex items-center gap-1">

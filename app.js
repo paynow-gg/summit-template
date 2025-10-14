@@ -88,7 +88,7 @@ function storeApp() {
                     const rawLine = window.cartData.raw?.lines?.find(
                         (line) => line.line_key === item.id || line.product_id === item.id
                     );
-                    
+
                     return {
                         id: item.id || item.productId || "",
                         slug: item.slug || item.productSlug || "",
@@ -97,6 +97,7 @@ function storeApp() {
                         quantity: parseInt(item.quantity) || 1,
                         currency: item.currency || "USD",
                         subscription: rawLine?.subscription || false,
+                        isTrial: rawLine?.trial || false,
                         cartKey: `${item.id}_${rawLine?.subscription ? "sub" : "onetime"}`
                     };
                 });
@@ -224,26 +225,9 @@ function storeApp() {
                 return;
             }
 
-            // Check for existing subscription of the same product in cart
-            if (isSubscription) {
-                const alreadySub = this.cart.items.find((item) => item.subscription === true && item.id === product.id);
-                if (alreadySub) {
-                    this.showNotification(
-                        `${product.name} subscription is already in your cart.`,
-                        "warning"
-                    );
-                    this.cart.isOpen = true;
-                    setTimeout(() => {
-                        this.cart.isLoading = false;
-                    }, 1000);
-                    document.body.style.overflow = "hidden";
-                    return;
-                }
-            }
-            
-            // Check for existing trial in cart
+            // Check for existing trial in cart (only one trial allowed total)
             if (isTrial) {
-                const alreadyTrial = this.cart.items.find((item) => item.trial);
+                const alreadyTrial = this.cart.items.find((item) => item.isTrial && item.id !== product.id);
                 if (alreadyTrial) {
                     this.showNotification(
                         `You already have a trial in your cart (${alreadyTrial.name}). Remove it first before adding another.`,
@@ -257,22 +241,49 @@ function storeApp() {
                     return;
                 }
             }
-            
-            // Check if product already exists in cart
-            const existing = this.cart.items.find((item) => item.id === product.id);
-            if (existing) {
-                if (!existing.subscription) {
-                    existing.quantity += 1;
-                    this.showNotification(`${product.name} quantity increased!`, "success");
-                    return;
+
+            // Find any existing version of this product in cart
+            const existingItem = this.cart.items.find((item) => item.id === product.id);
+
+            // Determine if we need to swap or increment
+            if (existingItem) {
+                const existingIsTrial = existingItem.isTrial || false;
+                const existingIsSubscription = existingItem.subscription || false;
+
+                // Check if it's the EXACT same type (same product, same subscription status, same trial status)
+                const isSameType = (existingIsSubscription === isSubscription) && (existingIsTrial === isTrial);
+
+                if (isSameType) {
+                    // Same exact product type - handle quantity increase
+                    if (!isSubscription && !isTrial) {
+                        // Regular product - can increment quantity
+                        const newQuantity = existingItem.quantity + 1;
+                        existingItem.quantity = newQuantity;
+                        this.updateQuantity(product.id, newQuantity);
+                        this.showNotification(`${product.name} quantity increased!`, "success");
+                        return;
+                    } else {
+                        // Subscription or trial - can't add more than one
+                        const typeDesc = isTrial ? "trial" : "subscription";
+                        this.showNotification(
+                            `${product.name} ${typeDesc} is already in your cart.`,
+                            "warning"
+                        );
+                        this.cart.isOpen = true;
+                        setTimeout(() => {
+                            this.cart.isLoading = false;
+                        }, 1000);
+                        document.body.style.overflow = "hidden";
+                        return;
+                    }
                 } else {
-                    this.showNotification(`${product.name} is already in your cart.`, "warning");
-                    this.cart.isOpen = true;
-                    setTimeout(() => {
-                        this.cart.isLoading = false;
-                    }, 1000);
-                    document.body.style.overflow = "hidden";
-                    return;
+                    // Different type of same product - need to swap
+                    const oldType = existingIsTrial ? "trial" : (existingIsSubscription ? "subscription" : "regular");
+                    const newType = isTrial ? "trial" : (isSubscription ? "subscription" : "regular");
+
+                    this.showNotification(`Swapping ${oldType} version with ${newType} version of ${product.name}`, "info");
+                    await this.removeFromCart(product.id);
+                    // Continue to add the new version below
                 }
             }
             
@@ -316,7 +327,7 @@ function storeApp() {
                         currency: product.currency || "USD",
                         quantity: 1,
                         subscription: isSubscription,
-                        trial: isTrial || false
+                        isTrial: isTrial || false
                     });
 
                     this.showNotification(`${product.name} added to your cart!`, "success");
@@ -364,21 +375,23 @@ function storeApp() {
                 this.redirectToLogin("Please log in to modify cart");
                 return;
             }
-            
+
             try {
                 this.cart.isLoading = true;
-                
+
                 const item = this.cart.items.find((item) => item.id === productId);
                 if (!item) return;
-                
-                // Remove item optimistically
+
+                // Remove item optimistically from local state
                 this.cart.items = this.cart.items.filter((item) => item.id !== productId);
-                
-                const response = await fetch(`/cart/remove/${item.slug}`, {
+
+                // Use /cart/set with quantity=0 to remove entire item (all quantities)
+                // This ensures all quantities are removed, not just 1
+                const response = await fetch(`/cart/set/${item.slug}?quantity=0`, {
                     method: "GET",
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
-                
+
                 if (response.ok || response.status === 404) {
                     this.showNotification("Item removed from cart", "success");
                 } else {
@@ -386,11 +399,12 @@ function storeApp() {
                     this.cart.items.push(item);
                     this.showNotification("Failed to remove item", "error");
                 }
-                
+
                 this.cart.isLoading = false;
             } catch (error) {
                 console.error("Error removing from cart:", error);
                 this.showNotification("Item removed locally", "info");
+                this.cart.isLoading = false;
             }
         },
         
