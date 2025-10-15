@@ -111,11 +111,11 @@
           "header": "Server Information",
           "options": [
             {
-                "id": "server_ip",
-                "name": "Server Address",
-                "default": "invadedlands.net",
-                "description": "This is used to gather the player count of your minecraft server.",
-                "type": "textarea"
+              "id": "server_ip",
+              "name": "Server Address",
+              "default": "invadedlands.net",
+              "description": "This is used to gather the player count of your minecraft server.",
+              "type": "textarea"
             },
             {
               "id": "server_port",
@@ -125,11 +125,11 @@
               "type": "textarea"
             },
             {
-                "id": "discord_id",
-                "name": "Discord ID",
-                "default": "264502963576373250",
-                "description": "This is used to ping discord online users, Found in Server Settings > Engagement.",
-                "type": "textarea"
+              "id": "discord_id",
+              "name": "Discord ID",
+              "default": "905134664765804545",
+              "description": "This is used to ping discord online users, Found in Server Settings > Engagement.",
+              "type": "textarea"
             },
             {
               "id": "discord_url",
@@ -193,7 +193,7 @@
               {
                   "id": "welcome-text",
                   "name": "Welcome Section Text",
-                  "default": "To begin shopping, please select a category from the sidebar. Users require parental consent / have to be of age to use our web store, not having parental consent while being underage will result in banishment from our server. Please note that ranks cost a one-time fee and are unlocked permanently!",
+                  "default": "To begin shopping, please select a category from the sidebar.",
                   "description": "The text you see on the home page.",
                   "type": "rich-text"
               }
@@ -205,7 +205,7 @@
               {
                   "id": "support-text",
                   "name": "Support Section Text",
-                  "default": "Need any questions answered before checkout? Waited more than 20 minutes but your package still has not arrived? Ask the community/staff on Discord, or for payment support, submit a support ticket on our website.",
+                  "default": "Need assistance? If you have questions before checkout or your order hasn't arrived after 20 minutes, don't hesitate to reach out. Contact us through any of the options below.",
                   "description": "The text you see on the home page.",
                   "type": "rich-text"
               }
@@ -217,7 +217,7 @@
               {
                   "id": "payment-text",
                   "name": "Payment Section Text",
-                  "default": "All payments are final and non-refundable. Attempting a chargeback or opening a PayPal dispute will result in permanent and irreversible banishment from all of our servers, and other minecraft stores.It could take between 1-20 minutes for your purchase to be credited in-game. If you are still not credited after this time period, please open a support ticket on our forums with proof of purchase and we will look into your issue.",
+                  "default": "All products are sold by PayNow.gg, our authorized reseller and official Merchant of Record. They handle all sales, payments, and order fulfillment. All payments are final and non-refundable.",
                   "description": "The text you see on the home page.",
                   "type": "rich-text"
               }
