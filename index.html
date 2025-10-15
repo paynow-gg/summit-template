@@ -41,8 +41,8 @@
             {% if config("discord_url") != "" %}
                 <a href="{{ config("discord_url") }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Discord Server</a>
             {% endif %}
-            {% if store.support_url != "" %}
-                <a href="{{ store.support_url }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Contact Us</a>
+            {% if store.support_url ?? store.support_email %}
+                <a href="{{ store.support_url ?? 'mailto:' ~ store.support_email }}" target="_blank" class="bg-primary btn-shine text-white cursor-pointer rounded-lg px-6 h-[52px] font-bold transition-all hover:opacity-75 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Contact Us</a>
             {% endif %}
             </div>
         </section>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="text">
                     <p class="text-xs uppercase font-bold text-muted">Payment Information</p>
-                    <h1 class="text-3xl font-black text-white">Refund Policy</h1>
+                    <h1 class="text-3xl font-black text-white">Payments</h1>
                 </div>
             </div>
             <p class="text-muted">
