@@ -14,7 +14,11 @@
                     <h3 class="text-lg font-bold text-white">{{ store.name }}</h3>
                 </div>
                 <p class="text-sm text-muted leading-relaxed">
-                    Your trusted source for premium {{ store.platform|default('gaming') }} content and services.
+                    {% if store.description %}
+                        {{ store.description }}
+                    {% else %}
+                        Your trusted source for premium {{ store.platform|default('gaming') }} content and services.
+                    {% endif %}
                 </p>
                 
                 {% if config("discord_url") or config("twitter_url") or config("instagram_url") or config("youtube_url") or config("twitch_url") or config("tiktok_url") or config("facebook_url") %}
@@ -69,11 +73,19 @@
                             {{ navlink.name }}
                         </a>
                     {% endfor %}
-                    {% if supports_customer_management %}
-                        <a href="/account" class="block text-sm text-muted hover:text-primary transition-colors">
-                            My Account
+                    {% for custom_page in custom_pages %}
+                        {% if not custom_page.settings %}
+                            {% if custom_page.path starts with '/' %}
+                            {% set page_parsed_path = custom_page.path %}
+                        {% else %}
+                            {% set page_parsed_path = '/' ~ custom_page.path %}
+                        {% endif %}
+
+                        <a href="{{ page_parsed_path }}" class="block text-sm text-muted hover:text-primary transition-colors">
+                            {{ custom_page.title }}
                         </a>
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </nav>
             </div>
             
