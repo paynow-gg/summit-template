@@ -65,7 +65,8 @@ function storeApp() {
             isOpen: false,
             type: null,
             data: null,
-            subscription: false
+            subscription: false,
+            showOptions: false
         },
         
         cart: {
@@ -107,12 +108,12 @@ function storeApp() {
         openModal(type, data = null) {
             this.modal.type = type;
             this.modal.data = data;
-            
+            this.modal.showOptions = false;
+
             if (data) {
                 this.modal.subscription = data.isSubscription;
             }
-            
-            console.log(data);
+
             this.modal.isOpen = true;
             document.body.style.overflow = "hidden";
         },
@@ -212,11 +213,73 @@ function storeApp() {
         },
         
         isValidSteamID: (steamId) => /^7656119\d{10}$/.test(steamId),
-        
+
+        collectProductOptions(product) {
+            const gameServerDropdown = document.getElementById('gameServerDropdown');
+            const customVariableInputs = document.querySelectorAll('select[id^="customVariables"], input[id^="customVariables"]');
+
+            const options = {};
+
+            if (gameServerDropdown && gameServerDropdown.value) {
+                options.gameServerId = parseInt(gameServerDropdown.value);
+                // Get the selected option text (gameserver name)
+                options.gameServerName = gameServerDropdown.options[gameServerDropdown.selectedIndex]?.text || 'Unknown Server';
+            }
+
+            if (customVariableInputs.length > 0) {
+                options.customVariables = {};
+                options.customVariablesDisplay = {}; // For display in cart
+                customVariableInputs.forEach(input => {
+                    const identifier = input.name || input.id.replace('customVariables[', '').replace(']', '');
+                    const value = input.value;
+
+                    options.customVariables[identifier] = value;
+
+                    // Get friendly name from product data if available
+                    const customVar = product.custom_variables && Object.values(product.custom_variables).find(v => v.identifier === identifier);
+                    const friendlyName = customVar?.name || identifier;
+
+                    // For dropdowns, get the selected option text
+                    let displayValue = value;
+                    if (input.tagName === 'SELECT') {
+                        displayValue = input.options[input.selectedIndex]?.text || value;
+                    }
+
+                    options.customVariablesDisplay[friendlyName] = displayValue;
+                });
+            }
+
+            return options;
+        },
+
         async addToCart(product, isSubscription = false, isTrial = false) {
             if (!this.isLoggedIn()) {
                 this.redirectToLogin("Please log in to modify cart");
                 return;
+            }
+
+            // Check if product has gameservers or custom_variables and options haven't been selected yet
+            const hasGameServers = product.single_game_server_only && product.gameservers && Object.keys(product.gameservers).length > 0;
+            const hasCustomVariables = product.custom_variables && Object.keys(product.custom_variables).length > 0;
+
+            if ((hasGameServers || hasCustomVariables) && !this.modal.showOptions) {
+                this.modal.showOptions = true;
+                return;
+            }
+
+            // If showOptions is true, collect the selected options
+            if (this.modal.showOptions) {
+                const options = this.collectProductOptions(product);
+
+                if (options.gameServerId) {
+                    product.gameServerId = options.gameServerId;
+                    product.gameServerName = options.gameServerName;
+                }
+                if (options.customVariables) {
+                    product.customVariables = options.customVariables;
+                    product.customVariablesDisplay = options.customVariablesDisplay;
+                }
+
             }
 
             // Check if product is in stock
@@ -242,11 +305,14 @@ function storeApp() {
                 }
             }
 
+            // Check if product has options/configuration - if so, treat each configuration as separate line item
+            const hasOptions = (hasGameServers || hasCustomVariables);
+
             // Find any existing version of this product in cart
             const existingItem = this.cart.items.find((item) => item.id === product.id);
 
             // Determine if we need to swap or increment
-            if (existingItem) {
+            if (existingItem && !hasOptions) {
                 const existingIsTrial = existingItem.isTrial || false;
                 const existingIsSubscription = existingItem.subscription || false;
 
@@ -261,6 +327,7 @@ function storeApp() {
                         existingItem.quantity = newQuantity;
                         this.updateQuantity(product.id, newQuantity);
                         this.showNotification(`${product.name} quantity increased!`, "success");
+                        this.closeModal();
                         return;
                     } else {
                         // Subscription or trial - can't add more than one
@@ -269,6 +336,7 @@ function storeApp() {
                             `${product.name} ${typeDesc} is already in your cart.`,
                             "warning"
                         );
+                        this.closeModal();
                         this.cart.isOpen = true;
                         setTimeout(() => {
                             this.cart.isLoading = false;
@@ -285,6 +353,11 @@ function storeApp() {
                     await this.removeFromCart(product.id);
                     // Continue to add the new version below
                 }
+            }
+
+            // If product has options, always allow adding as separate line item (each configuration is unique)
+            if (hasOptions && existingItem) {
+                this.showNotification(`Adding another ${product.name} with different configuration...`, "info");
             }
             
             try {
@@ -319,7 +392,7 @@ function storeApp() {
                 });
 
                 if (response.ok) {
-                    this.cart.items.push({
+                    const cartItem = {
                         id: product.id,
                         slug: product.slug,
                         name: product.name,
@@ -328,9 +401,22 @@ function storeApp() {
                         quantity: 1,
                         subscription: isSubscription,
                         isTrial: isTrial || false
-                    });
+                    };
+
+                    // Add gameserver display info if present
+                    if (product.gameServerName) {
+                        cartItem.gameServerName = product.gameServerName;
+                    }
+
+                    // Add custom variables display info if present
+                    if (product.customVariablesDisplay) {
+                        cartItem.customVariablesDisplay = product.customVariablesDisplay;
+                    }
+
+                    this.cart.items.push(cartItem);
 
                     this.showNotification(`${product.name} added to your cart!`, "success");
+                    this.closeModal();
                     this.cart.isOpen = true;
                     this.cart.isLoading = true;
                     document.body.style.overflow = "hidden";

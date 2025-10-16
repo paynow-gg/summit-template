@@ -188,7 +188,77 @@
                         </div>
                     </div>
                 </div>
-                <div class="space-y-4" x-show="!showGift">
+                <div class="space-y-4" x-show="modal.showOptions && !showGift">
+                    <div class="bg-content-light rounded-xl p-4">
+                        <h4 class="font-bold mb-4 flex items-center gap-2 text-white">
+                            <i class="fa-solid fa-sliders text-primary"></i>
+                            Select Options
+                        </h4>
+
+                        <template x-if="modal.data?.single_game_server_only && modal.data?.gameservers && Object.keys(modal.data.gameservers).length > 0">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-white mb-2">
+                                    <i class="fa-solid fa-server text-primary mr-1"></i>
+                                    Game Server
+                                </label>
+                                <select id="gameServerDropdown" name="gameServer" class="form-select block w-full pl-3 pr-10 py-3 text-base bg-content border border-white/10 text-white sm:text-sm rounded-lg shadow-md focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all">
+                                    <template x-for="(gameServer, key) in modal.data.gameservers" :key="key">
+                                        <option :value="gameServer.id" x-text="gameServer.name"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </template>
+
+                        <template x-if="modal.data?.custom_variables && Object.keys(modal.data.custom_variables).length > 0">
+                            <div class="space-y-4">
+                                <template x-for="(customVar, key) in modal.data.custom_variables" :key="key">
+                                    <div>
+                                        <label class="block text-sm font-medium text-white mb-2">
+                                            <i class="fa-solid fa-gear text-primary mr-1"></i>
+                                            <span x-text="customVar.name"></span>
+                                        </label>
+                                        <template x-if="customVar.type === 'dropdown'">
+                                            <select :id="'customVariables[' + customVar.identifier + ']'"
+                                                    :name="customVar.identifier"
+                                                    class="form-select block w-full pl-3 pr-10 py-3 text-base bg-content border border-white/10 text-white sm:text-sm rounded-lg shadow-md focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all">
+                                                <template x-for="option in customVar.options" :key="option.value">
+                                                    <option :value="option.value" x-text="option.name"></option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                        <template x-if="customVar.type !== 'dropdown'">
+                                            <input :type="customVar.type"
+                                                   :pattern="customVar.value_regex"
+                                                   :required="true"
+                                                   :id="'customVariables[' + customVar.identifier + ']'"
+                                                   :name="customVar.identifier"
+                                                   :placeholder="customVar.description"
+                                                   class="form-input block w-full pl-3 pr-10 py-3 text-base bg-content border border-white/10 text-white placeholder:text-gray-500 sm:text-sm rounded-lg shadow-md focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all" />
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button @click="modal.showOptions = false"
+                                class="px-5 bg-content-light shadow-2xl py-4 rounded-xl hover:bg-content transition-all">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button @click="addToCart(modal.data, false)"
+                                class="flex-1 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            Add to Cart
+                        </button>
+                        <button @click="addToCart(modal.data, true)"
+                                x-show="modal.subscription"
+                                class="flex-1 bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4" x-show="!showGift && !modal.showOptions">
                     <div class="bg-content-light rounded-xl p-4">
                         <h4 class="font-bold mb-2 flex items-center gap-2 text-white">
                             <i class="fa-solid fa-info-circle text-primary"></i>
@@ -208,8 +278,8 @@
                                                     prose-img:rounded-lg prose-img:shadow-lg"></div>
                     </div>
                     <div x-show="modal.data?.trial.enabled">
-                        <button 
-                            @click="addToCart(modal.data, true, { period_value: modal.data?.trial?.period_value, period_scale: modal.data?.trial?.period_scale }) ; closeModal()"
+                        <button
+                            @click="addToCart(modal.data, true, { period_value: modal.data?.trial?.period_value, period_scale: modal.data?.trial?.period_scale })"
                             class="w-full col-span-2 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
 
                             <span x-text="modal.data?.trial?.period_value || ''"></span>
@@ -218,11 +288,11 @@
                         </button>
                     </div>
                     <div class="flex flex-col md:flex-row gap-4">
-                        <button @click="addToCart(modal.data, false); closeModal()"
+                        <button @click="addToCart(modal.data, false)"
                                 class="w-full bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Add to Cart
                         </button>
-                        <button @click="addToCart(modal.data, true); closeModal()" x-show="modal.subscription"
+                        <button @click="addToCart(modal.data, true)" x-show="modal.subscription"
                                 class="w-full bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Subscribe
                         </button>

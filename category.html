@@ -34,6 +34,21 @@
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
                                     period_scale: '{{ product.trial.period_scale|default('') }}'
+                                },
+                                single_game_server_only: {{ product.single_game_server_only ? 'true' : 'false' }},
+                                gameservers: {
+                                    {% if product.gameservers is iterable and product.gameservers is not empty %}
+                                        {% for key, value in product.gameservers %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                },
+                                custom_variables: {
+                                    {% if product.custom_variables is iterable and product.custom_variables is not empty %}
+                                        {% for key, value in product.custom_variables %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                 }
                     })" 
                 class="relative h-48 bg-content-light flex items-center justify-center cursor-pointer overflow-hidden group-hover:bg-primary transition-colors duration-300">
@@ -58,7 +73,6 @@
                 </div>
                 {% endif %}
             </div>
-            
             <div class="p-6">
                 <div class="text-center mb-4">
                     <h3 @click="openModal('productInfo', {
@@ -80,6 +94,21 @@
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
                                     period_scale: '{{ product.trial.period_scale|default('') }}'
+                                },
+                                single_game_server_only: {{ product.single_game_server_only ? 'true' : 'false' }},
+                                gameservers: {
+                                    {% if product.gameservers is iterable and product.gameservers is not empty %}
+                                        {% for key, value in product.gameservers %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                },
+                                custom_variables: {
+                                    {% if product.custom_variables is iterable and product.custom_variables is not empty %}
+                                        {% for key, value in product.custom_variables %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                 }
                             })" 
                         class="text-xl font-bold text-white mb-3 cursor-pointer hover:text-primary transition-colors">
@@ -124,6 +153,21 @@
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
                                     period_scale: '{{ product.trial.period_scale|default('') }}'
+                                },
+                                single_game_server_only: {{ product.single_game_server_only ? 'true' : 'false' }},
+                                gameservers: {
+                                    {% if product.gameservers is iterable and product.gameservers is not empty %}
+                                        {% for key, value in product.gameservers %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                },
+                                custom_variables: {
+                                    {% if product.custom_variables is iterable and product.custom_variables is not empty %}
+                                        {% for key, value in product.custom_variables %}
+                                            {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                 }
                             })" 
                             class="cursor-pointer flex-1 bg-content-light text-white rounded-xl py-3 px-4 font-medium hover:bg-primary transition-all duration-200 flex items-center justify-center gap-2">
