@@ -85,12 +85,13 @@ function storeApp() {
         
         loadCartFromServer() {
             if (window.cartData !== undefined) {
+
                 this.cart.items = (window.cartData.items || []).map((item) => {
                     const rawLine = window.cartData.raw?.lines?.find(
                         (line) => line.line_key === item.id || line.product_id === item.id
                     );
 
-                    return {
+                    const cartItem = {
                         id: item.id || item.productId || "",
                         slug: item.slug || item.productSlug || "",
                         name: item.name || item.productName || "Unknown Product",
@@ -101,6 +102,27 @@ function storeApp() {
                         isTrial: rawLine?.trial || false,
                         cartKey: `${item.id}_${rawLine?.subscription ? "sub" : "onetime"}`
                     };
+
+                    // Extract gameserver information if present (check both possible field names)
+                    if (rawLine?.selected_gameserver) {
+                        cartItem.gameServerName = rawLine.selected_gameserver.name || 'Unknown Server';
+                    } else if (rawLine?.gameserver) {
+                        cartItem.gameServerName = rawLine.gameserver.name || 'Unknown Server';
+                    }
+
+                    // Extract custom variables if present (array format from server)
+                    if (rawLine?.custom_variables && Array.isArray(rawLine.custom_variables) && rawLine.custom_variables.length > 0) {
+                        cartItem.customVariablesDisplay = {};
+
+                        rawLine.custom_variables.forEach(customVar => {
+                            if (customVar && customVar.name && (customVar.value || customVar.display_value)) {
+                                const displayValue = customVar.display_value || customVar.value;
+                                cartItem.customVariablesDisplay[customVar.name] = displayValue;
+                            }
+                        });
+
+                    }
+                    return cartItem;
                 });
             }
         },

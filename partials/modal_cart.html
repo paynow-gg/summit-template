@@ -92,7 +92,7 @@
                                 <span x-show="item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">Free Trial</span>
 
                                 <!-- Display selected options -->
-                                <div x-show="item.gameServerName || item.customVariablesDisplay" class="text-xs mt-2 bg-content rounded-lg p-2 space-y-1">
+                                <div x-show="item.gameServerName || item.customVariablesDisplay" class="text-xs mt-2 bg-content rounded-lg p-2 flex flex-col gap-2">
                                     <div x-show="item.gameServerName" class="flex items-center gap-1.5">
                                         <i class="fa-solid fa-server text-primary text-xs"></i>
                                         <span class="text-muted">Server:</span>
