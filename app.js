@@ -243,7 +243,7 @@ function storeApp() {
             const options = {};
 
             if (gameServerDropdown && gameServerDropdown.value) {
-                options.gameServerId = parseInt(gameServerDropdown.value);
+                options.gameServerId = gameServerDropdown.value;
                 // Get the selected option text (gameserver name)
                 options.gameServerName = gameServerDropdown.options[gameServerDropdown.selectedIndex]?.text || 'Unknown Server';
             }
