@@ -243,7 +243,7 @@ function storeApp() {
             const options = {};
 
             if (gameServerDropdown && gameServerDropdown.value) {
-                options.gameServerId = parseInt(gameServerDropdown.value);
+                options.gameServerId = gameServerDropdown.value;
                 // Get the selected option text (gameserver name)
                 options.gameServerName = gameServerDropdown.options[gameServerDropdown.selectedIndex]?.text || 'Unknown Server';
             }
@@ -412,6 +412,13 @@ function storeApp() {
                     method: "GET",
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
+
+                const responseQuery = new URL(response.url).searchParams;
+                if (responseQuery.has('err')) {
+                    const errorMessage = decodeURIComponent(responseQuery.get('err'));
+                    this.showNotification(errorMessage, "error")
+                    return;
+                }
 
                 if (response.ok) {
                     const cartItem = {
