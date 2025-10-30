@@ -181,7 +181,7 @@
                         class="px-4 py-4 bg-content-light w-full rounded-xl text-center font-script outline-none text-sm">
                         <div class="flex gap-3">
                             <button @click="showGift = ! showGift" class="px-5 bg-content-light shadow-2xl py-4 rounded-xl cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
-                            <button id="purchaseFromGift" @click="giftViaCart('{{ auth_provider }}'); showGift = ! showGift;"
+                            <button id="purchaseFromGift" @click="giftViaCart('{{ auth_provider }}')"
                                     class="w-full bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                                     Gift Package
                             </button>
@@ -246,14 +246,25 @@
                                 class="px-5 bg-content-light shadow-2xl py-4 rounded-xl hover:bg-content transition-all">
                             <i class="fa-solid fa-arrow-left"></i>
                         </button>
-                        <button x-show="modal.data?.allowOnetimePurchase" @click="addToCart(modal.data, false)"
+                        <button x-show="modal.selectedAction === 'add' && modal.data?.allowOnetimePurchase" @click="addToCart(modal.data, false)"
                                 class="flex-1 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Add to Cart
                         </button>
-                        <button @click="addToCart(modal.data, true)"
-                                x-show="modal.subscription"
+                        <button x-show="modal.selectedAction === 'trial' && modal.data?.trial.enabled" @click="addToCart(modal.data, true, { period_value: modal.data?.trial?.period_value, period_scale: modal.data?.trial?.period_scale })"
+                                class="flex-1 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            <span x-text="modal.data?.trial?.period_value || ''"></span>
+                            <span x-text="modal.data?.trial?.period_scale || ''"></span>
+                            Free Trial
+                        </button>
+                        <button x-show="modal.selectedAction === 'subscribe' && modal.subscription"
+                                @click="addToCart(modal.data, true)"
                                 class="flex-1 bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Subscribe
+                        </button>
+                        <button x-show="modal.selectedAction === 'gift' && modal.data?.allowGifting && modal.data?.allowOnetimePurchase"
+                                @click="giftViaCart('{{ auth_provider }}')"
+                                class="flex-1 bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
+                            Gift Package
                         </button>
                     </div>
                 </div>

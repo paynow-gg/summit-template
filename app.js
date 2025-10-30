@@ -66,7 +66,10 @@ function storeApp() {
             type: null,
             data: null,
             subscription: false,
-            showOptions: false
+            showOptions: false,
+            selectedAction: null, // 'add', 'subscribe', 'trial', 'gift'
+            giftRecipientId: null,
+            giftPlatform: null
         },
         
         cart: {
@@ -134,6 +137,20 @@ function storeApp() {
 
             if (data) {
                 this.modal.subscription = data.isSubscription;
+
+                // Debug logging
+                if (type === 'productInfo') {
+                    console.log('=== PRODUCT MODAL OPENED ===');
+                    console.log('Product Data:', data);
+                    console.log('allowOnetimePurchase:', data.allowOnetimePurchase);
+                    console.log('allowGifting:', data.allowGifting);
+                    console.log('isSubscription:', data.isSubscription);
+                    console.log('trial.enabled:', data.trial?.enabled);
+                    console.log('single_game_server_only:', data.single_game_server_only);
+                    console.log('gameservers:', data.gameservers);
+                    console.log('custom_variables:', data.custom_variables);
+                    console.log('========================');
+                }
             }
 
             this.modal.isOpen = true;
@@ -143,10 +160,13 @@ function storeApp() {
         closeModal() {
             this.modal.isOpen = false;
             document.body.style.overflow = "";
-            
+
             setTimeout(() => {
                 this.modal.type = null;
                 this.modal.data = null;
+                this.modal.selectedAction = null;
+                this.modal.giftRecipientId = null;
+                this.modal.giftPlatform = null;
             }, 200);
         },
         
@@ -176,21 +196,65 @@ function storeApp() {
                 this.redirectToLogin("Please log in to purchase gifts");
                 return;
             }
-            
-            const idInput = document.getElementById("idInput");
-            const recipientId = idInput?.value?.trim();
-            
-            if (!recipientId) {
-                this.showNotification("Please enter a recipient ID", "error");
-                return;
-            }
-            
-            if (platform === "steam" && !this.isValidSteamID(recipientId)) {
-                this.showNotification("Please enter a valid SteamID64!", "error");
-                return;
-            }
-            
+
             const product = this.modal.data;
+
+            // Get recipient ID from input or stored value
+            const idInput = document.getElementById("idInput");
+            let recipientId = this.modal.giftRecipientId || idInput?.value?.trim();
+
+            // If we're not on the options screen yet, validate and store the recipient ID
+            if (!this.modal.showOptions) {
+                if (!recipientId) {
+                    this.showNotification("Please enter a recipient ID", "error");
+                    return;
+                }
+
+                if (platform === "steam" && !this.isValidSteamID(recipientId)) {
+                    this.showNotification("Please enter a valid SteamID64!", "error");
+                    return;
+                }
+
+                // Store the recipient info for when we come back from options screen
+                this.modal.giftRecipientId = recipientId;
+                this.modal.giftPlatform = platform;
+            }
+
+            // Check if product has gameservers or custom_variables and options haven't been selected yet
+            const hasGameServers = product.single_game_server_only && product.gameservers && Object.keys(product.gameservers).length > 0;
+            const hasCustomVariables = product.custom_variables && Object.keys(product.custom_variables).length > 0;
+
+            // If gameserver exists but only one option, auto-select it
+            if (hasGameServers && Object.keys(product.gameservers).length === 1 && !product.gameServerId) {
+                const firstGameServer = Object.values(product.gameservers)[0];
+                product.gameServerId = firstGameServer.id;
+                product.gameServerName = firstGameServer.name;
+            }
+
+            // If product has options and they haven't been selected, show options screen
+            if ((hasGameServers || hasCustomVariables) && !this.modal.showOptions) {
+                this.modal.selectedAction = 'gift';
+                this.modal.showOptions = true;
+                return;
+            }
+
+            // If showOptions is true, collect the selected options
+            if (this.modal.showOptions) {
+                const options = this.collectProductOptions(product);
+
+                if (options.gameServerId) {
+                    product.gameServerId = options.gameServerId;
+                    product.gameServerName = options.gameServerName;
+                }
+                if (options.customVariables) {
+                    product.customVariables = options.customVariables;
+                    product.customVariablesDisplay = options.customVariablesDisplay;
+                }
+
+                // Use stored values
+                recipientId = this.modal.giftRecipientId;
+                platform = this.modal.giftPlatform;
+            }
             
             if (!product) {
                 this.showNotification("No product selected", "error");
@@ -280,11 +344,32 @@ function storeApp() {
                 return;
             }
 
+            // Normalize isTrial - it can be a boolean or an object with trial details
+            const isTrialPurchase = typeof isTrial === 'object' ? true : isTrial;
+
             // Check if product has gameservers or custom_variables and options haven't been selected yet
             const hasGameServers = product.single_game_server_only && product.gameservers && Object.keys(product.gameservers).length > 0;
             const hasCustomVariables = product.custom_variables && Object.keys(product.custom_variables).length > 0;
 
-            if ((hasGameServers || hasCustomVariables) && !this.modal.showOptions) {
+            // If gameserver exists but only one option, auto-select it
+            if (hasGameServers && Object.keys(product.gameservers).length === 1 && !product.gameServerId) {
+                const firstGameServer = Object.values(product.gameservers)[0];
+                product.gameServerId = firstGameServer.id;
+                product.gameServerName = firstGameServer.name;
+            }
+
+            // Determine which action was clicked and store it
+            if (!this.modal.showOptions) {
+                if (isTrialPurchase) {
+                    this.modal.selectedAction = 'trial';
+                } else if (isSubscription) {
+                    this.modal.selectedAction = 'subscribe';
+                } else {
+                    this.modal.selectedAction = 'add';
+                }
+            }
+
+            if ((hasGameServers || hasCustomVariables) && !this.modal.showOptions && !isTrialPurchase) {
                 this.modal.showOptions = true;
                 return;
             }
@@ -302,6 +387,10 @@ function storeApp() {
                     product.customVariablesDisplay = options.customVariablesDisplay;
                 }
 
+            } else if (isTrialPurchase && (hasGameServers || hasCustomVariables)) {
+                // For trial purchases with options, show the options screen first
+                this.modal.showOptions = true;
+                return;
             }
 
             // Check if product is in stock
@@ -311,7 +400,7 @@ function storeApp() {
             }
 
             // Check for existing trial in cart (only one trial allowed total)
-            if (isTrial) {
+            if (isTrialPurchase) {
                 const alreadyTrial = this.cart.items.find((item) => item.isTrial && item.id !== product.id);
                 if (alreadyTrial) {
                     this.showNotification(
@@ -339,11 +428,11 @@ function storeApp() {
                 const existingIsSubscription = existingItem.subscription || false;
 
                 // Check if it's the EXACT same type (same product, same subscription status, same trial status)
-                const isSameType = (existingIsSubscription === isSubscription) && (existingIsTrial === isTrial);
+                const isSameType = (existingIsSubscription === isSubscription) && (existingIsTrial === isTrialPurchase);
 
                 if (isSameType) {
                     // Same exact product type - handle quantity increase
-                    if (!isSubscription && !isTrial) {
+                    if (!isSubscription && !isTrialPurchase) {
                         // Regular product - can increment quantity
                         const newQuantity = existingItem.quantity + 1;
                         existingItem.quantity = newQuantity;
@@ -353,7 +442,7 @@ function storeApp() {
                         return;
                     } else {
                         // Subscription or trial - can't add more than one
-                        const typeDesc = isTrial ? "trial" : "subscription";
+                        const typeDesc = isTrialPurchase ? "trial" : "subscription";
                         this.showNotification(
                             `${product.name} ${typeDesc} is already in your cart.`,
                             "warning"
@@ -369,7 +458,7 @@ function storeApp() {
                 } else {
                     // Different type of same product - need to swap
                     const oldType = existingIsTrial ? "trial" : (existingIsSubscription ? "subscription" : "regular");
-                    const newType = isTrial ? "trial" : (isSubscription ? "subscription" : "regular");
+                    const newType = isTrialPurchase ? "trial" : (isSubscription ? "subscription" : "regular");
 
                     this.showNotification(`Swapping ${oldType} version with ${newType} version of ${product.name}`, "info");
                     await this.removeFromCart(product.id);
@@ -381,30 +470,30 @@ function storeApp() {
             if (hasOptions && existingItem) {
                 this.showNotification(`Adding another ${product.name} with different configuration...`, "info");
             }
-            
+
             try {
                 this.showNotification(`Adding ${product.name} to cart...`, "info");
-                
+
                 const params = new URLSearchParams();
-                
+
                 if (product.gameServerId) {
                     params.set("gameserver_id", product.gameServerId);
                 }
-                
+
                 if (product.customVariables) {
                     Object.entries(product.customVariables).forEach(([key, val]) => {
                         params.set(`custom_variables[${key}]`, val);
                     });
                 }
-                
+
                 if (isSubscription) {
                     params.set("subscription", "true");
                 }
-                
-                if (isTrial) {
+
+                if (isTrialPurchase) {
                     params.set("trial", "true");
                 }
-                
+
                 const query = params.toString();
                 const url = `/cart/add/${product.slug}${query ? "?" + query : ""}`;
 
@@ -429,7 +518,7 @@ function storeApp() {
                         currency: product.currency || "USD",
                         quantity: 1,
                         subscription: isSubscription,
-                        isTrial: isTrial || false
+                        isTrial: isTrialPurchase || false
                     };
 
                     // Add gameserver display info if present

@@ -30,8 +30,8 @@
                                 vatRatePercentage: '{{ product.pricing.vat_rate.percentage }}',
                                 vatRateName: '{{ product.pricing.vat_rate.vat_abbreviation }}',
                                 inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
-                                allowOnetimePurchase: {{ product.allow_one_time_purchase ? 'true' : 'false' }},
-                                allowGifting:  {{ product.is_gifting_disabled ? 'false' : 'true'}},
+                                allowOnetimePurchase: {{ product.allow_one_time_purchase|default(true) ? 'true' : 'false' }},
+                                allowGifting:  {{ product.is_gifting_disabled|default(false) ? 'false' : 'true'}},
                                 trial: {
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
@@ -92,8 +92,8 @@
                                 vatRatePercentage: '{{ product.pricing.vat_rate.percentage }}',
                                 vatRateName: '{{ product.pricing.vat_rate.vat_abbreviation }}',
                                 inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
-                                allowOnetimePurchase: {{ product.allow_one_time_purchase ? 'true' : 'false' }},
-                                allowGifting:  {{ product.is_gifting_disabled ? 'false' : 'true'}},
+                                allowOnetimePurchase: {{ product.allow_one_time_purchase|default(true) ? 'true' : 'false' }},
+                                allowGifting:  {{ product.is_gifting_disabled|default(false) ? 'false' : 'true'}},
                                 trial: {
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
@@ -153,8 +153,8 @@
                                 vatRatePercentage: '{{ product.pricing.vat_rate.percentage }}',
                                 vatRateName: '{{ product.pricing.vat_rate.vat_abbreviation }}',
                                 inStock: {{ product.stock.available_to_purchase ? 'true' : 'false' }},
-                                allowOnetimePurchase: {{ product.allow_one_time_purchase ? 'true' : 'false' }},
-                                allowGifting:  {{ product.is_gifting_disabled ? 'false' : 'true'}},
+                                allowOnetimePurchase: {{ product.allow_one_time_purchase|default(true) ? 'true' : 'false' }},
+                                allowGifting:  {{ product.is_gifting_disabled|default(false) ? 'false' : 'true'}},
                                 trial: {
                                     enabled: {{ product.trial.eligible ? 'true' : 'false'}},
                                     period_value: '{{ product.trial.period_value|default('') }}',
