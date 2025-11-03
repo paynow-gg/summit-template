@@ -3,7 +3,7 @@
   "updates": {
       "supported": true,
       "version_check_supported": true,
-      "version": "1.0.3",
+      "version": "1.0.4",
       "github_url": "https://github.com/paynow-gg/summit-template",
       "github_branch": "main"
   },
@@ -57,6 +57,13 @@
               "default": "#754DD4",
               "description": "Second color, used for gradients and hover animations",
               "type": "colour-picker"
+            },
+            {
+              "id": "use_iframe_checkout",
+              "name": "Use iFrame checkout",
+              "default": true,
+              "description": "Uses iFrame checkout instead of redirecting to checkout",
+              "type": "toggle"
             }
           ]
       },
