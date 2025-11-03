@@ -587,6 +587,7 @@ function storeApp() {
                     })
 
                     this.cart.isLoading = false;
+                    this.toggleCart();
                 } else {
                     window.location.href = "/cart/checkout";
                 }
