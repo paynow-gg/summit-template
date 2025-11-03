@@ -81,9 +81,12 @@ function storeApp() {
                 return this.items.reduce((total, item) => total + item.price * item.quantity, 0);
             }
         },
+
+        useIFrameCheckout: true,
         
         init() {
             this.loadCartFromServer();
+            this.useIFrameCheckout = window.useIFrameCheckout
         },
         
         loadCartFromServer() {
@@ -554,7 +557,7 @@ function storeApp() {
             }
         },
         
-        proceedToCheckout() {
+        async proceedToCheckout() {
             if (!this.isLoggedIn()) {
                 this.redirectToLogin("Please log in to proceed to checkout");
                 return;
@@ -570,7 +573,23 @@ function storeApp() {
             } else if (giftItems.length > 1) {
                 this.showNotification("Gift items must be purchased one at a time", "warning");
             } else {
-                window.location.href = "/cart/checkout";
+                if (this.useIFrameCheckout) {
+                    this.cart.isLoading = true;
+                    const cartCheckoutResponse = await fetch('/cart/checkout', {
+                        method: "POST",
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
+
+                    const cartCheckout = await cartCheckoutResponse.json();
+
+                    window.PayNow.checkout.open({
+                        token: cartCheckout.token
+                    })
+
+                    this.cart.isLoading = false;
+                } else {
+                    window.location.href = "/cart/checkout";
+                }
             }
         },
         
