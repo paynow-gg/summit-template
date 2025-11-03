@@ -100,12 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
     usernameInput.addEventListener('input', function(e) {
         let value = e.target.value;
         
-        value = value.replace(/[^a-zA-Z0-9_]/g, '');
-        
-        if (value.length > 16) {
-            value = value.substring(0, 16);
-        }
-        
         e.target.value = value;
         
         if (value.length >= 3) {
