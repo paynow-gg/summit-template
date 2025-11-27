@@ -516,7 +516,7 @@ function storeApp() {
                 const url = `/cart/add/${product.slug}${query ? "?" + query : ""}`;
 
                 const response = await fetch(url, {
-                    method: "GET",
+                    method: "POST",
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
 
