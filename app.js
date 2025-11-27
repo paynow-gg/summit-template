@@ -88,6 +88,21 @@ function storeApp() {
             this.loadCartFromServer();
             this.useIFrameCheckout = window.useIFrameCheckout
         },
+
+        async handleResponseError(response) {
+            const contentType = response.headers.get('Content-Type');
+            const responseQuery = new URL(response.url).searchParams;
+            
+            if (contentType?.startsWith("application/json")) {
+                const errContent = await response.json();
+                this.showNotification(errContent.message, "error");
+            } else if (responseQuery.has('err')) {
+                const msg = decodeURIComponent(responseQuery.get('err'));
+                this.showNotification(msg, "error");
+            } else {
+                this.showNotification("An unknown error has occurred, please try again later.", "error");
+            }
+        },
         
         loadCartFromServer() {
             if (window.cartData !== undefined) {
@@ -505,13 +520,6 @@ function storeApp() {
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
 
-                const responseQuery = new URL(response.url).searchParams;
-                if (responseQuery.has('err')) {
-                    const errorMessage = decodeURIComponent(responseQuery.get('err'));
-                    this.showNotification(errorMessage, "error")
-                    return;
-                }
-
                 if (response.ok) {
                     const cartItem = {
                         id: product.id,
@@ -546,10 +554,7 @@ function storeApp() {
                         this.cart.isLoading = false;
                     }, 1000);
                 } else {
-                    this.showNotification("Redirecting to cart...", "info");
-                    setTimeout(() => {
-                        window.location.href = url;
-                    }, 1000);
+                    this.handleResponseError(response);
                 }
             } catch (error) {
                 console.error("Error adding to cart:", error);
@@ -579,6 +584,11 @@ function storeApp() {
                         method: "POST",
                         headers: { "X-Requested-With": "XMLHttpRequest" }
                     });
+
+                    if (!cartCheckoutResponse.ok) {
+                        this.handleResponseError(cartCheckoutResponse);
+                        return;
+                    }
 
                     const cartCheckout = await cartCheckoutResponse.json();
 
