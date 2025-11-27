@@ -97,7 +97,7 @@
                              class="overflow-hidden">
                             <div class="bg-content-light/50 border-t border-white/5">
                                 {% for child in navlink.children %}
-                                <a href="/products?tag={{ child.tag_slug }}" 
+                                <a href="/products?tag={{ child.tag_query }}" 
                                    @click="closeModal()" 
                                    class="flex items-center gap-4 ml-2 p-4 hover:bg-primary/20 transition-colors group">
                                     <div class="w-10 h-10 cursor-pointer relative overflow-hidden bg-white/10 flex items-center justify-center rounded-lg shadow-lg transition-all duration-300 hover:text-white">
