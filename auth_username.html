@@ -12,37 +12,37 @@
                     Enter Your Username
                 </h1>
                 <p class="text-muted text-sm">
-                    Please enter your Minecraft username to continue
+                    Please enter your {{ platform_identifier_name }} to continue
                 </p>
             </div>
 
             <form method="post" class="space-y-6">
                 <div>
                     <label for="username" class="block text-sm font-medium text-white mb-2">
-                        Minecraft Username
+                        {{ platform_identifier_name }}
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fa-solid fa-user text-muted text-sm"></i>
                         </div>
-                        <input 
-                            type="text" 
-                            name="username" 
+                        <input
+                            type="text"
+                            name="username"
                             id="username"
                             class="w-full pl-10 pr-4 py-3 bg-content-light border border-content-light rounded-xl text-white placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                             placeholder="Enter your username"
                             required
                             autocomplete="username"
-                            maxlength="16"
+                            maxlength="32"
                         />
                     </div>
                     <p class="mt-2 text-xs text-muted">
-                        Your Minecraft username (3-16 characters)
+                        Your {{ platform_identifier_name }}
                     </p>
                 </div>
 
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     class="w-full bg-primary btn-shine text-white font-bold py-3 px-4 rounded-xl hover:opacity-75 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                     <span>Continue</span>
@@ -51,11 +51,11 @@
 
                 <div class="text-center">
                     <p class="text-xs text-muted">
-                        By continuing, you agree to our 
+                        By continuing, you agree to our
                         <a href="/legal/terms-of-service" class="text-primary hover:text-white transition-colors">
                             Terms of Service
                         </a>
-                        and 
+                        and
                         <a href="/legal/privacy-policy" class="text-primary hover:text-white transition-colors">
                             Privacy Policy
                         </a>
@@ -72,7 +72,7 @@
                 <div>
                     <h3 class="font-semibold text-white text-sm mb-1">Secure Authentication</h3>
                     <p class="text-xs text-muted leading-relaxed">
-                        Your information is protected with industry-standard security. 
+                        Your information is protected with industry-standard security.
                         We only use your username for account identification and order processing.
                     </p>
                 </div>
@@ -81,7 +81,7 @@
 
         <div class="mt-4 text-center">
             <p class="text-xs text-muted">
-                Need help? 
+                Need help?
                 <a href="/support" class="text-primary hover:text-white transition-colors">
                     Contact Support
                 </a>
@@ -94,15 +94,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     const usernameInput = document.getElementById('username');
     const form = usernameInput.closest('form');
-    
+
     usernameInput.focus();
-    
+
     usernameInput.addEventListener('input', function(e) {
         let value = e.target.value;
-        
+
         e.target.value = value;
-        
-        if (value.length >= 3) {
+
+        if (value.length >= 2) {
             e.target.classList.remove('border-red-500');
             e.target.classList.add('border-green-500');
         } else if (value.length > 0) {
@@ -112,23 +112,23 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.classList.remove('border-green-500', 'border-red-500');
         }
     });
-    
+
     form.addEventListener('submit', function(e) {
         const username = usernameInput.value.trim();
-        
+
         if (username.length < 3) {
             e.preventDefault();
             usernameInput.focus();
             usernameInput.classList.add('border-red-500');
-            
+
             let errorDiv = form.querySelector('.error-message');
             if (!errorDiv) {
                 errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message text-red-400 text-sm mt-2 text-center';
                 form.appendChild(errorDiv);
             }
-            errorDiv.textContent = 'Username must be at least 3 characters long';
-            
+            errorDiv.textContent = 'Username must be at least 2 characters long';
+
             setTimeout(() => {
                 if (errorDiv.parentNode) {
                     errorDiv.remove();
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 3000);
         }
     });
-    
+
     usernameInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
