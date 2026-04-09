@@ -288,17 +288,90 @@
                                                     prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic
                                                     prose-img:rounded-lg prose-img:shadow-lg"></div>
                     </div>
-                    <div x-show="modal.data?.trial.enabled">
+
+                    <!-- Tier Group: Current Plan indicator -->
+                    <div x-show="modal.data?.active_tier_group && modal.data?.active_tier_group?.active_product_id === modal.data?.id && !modal.data?.active_tier_group?.pending_change_product_id"
+                        class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
+                        <div class="flex items-center justify-center gap-2 text-emerald-400 font-bold">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Current Plan</span>
+                        </div>
+                        <p class="text-sm text-muted mt-1">You are currently subscribed to this tier.</p>
+                    </div>
+
+                    <!-- Tier Group: Current Plan with pending change -->
+                    <div x-show="modal.data?.active_tier_group && modal.data?.active_tier_group?.active_product_id === modal.data?.id && modal.data?.active_tier_group?.pending_change_product_id"
+                        class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-center space-y-3">
+                        <div class="flex items-center justify-center gap-2 text-yellow-400 font-bold">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Current Plan</span>
+                        </div>
+                        <p class="text-sm text-muted">You have a pending tier change scheduled for next renewal.</p>
+                        <button @click="cancelPendingTierChange(modal.data)"
+                                :disabled="tierChange.isLoading"
+                                class="w-full bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-3 font-medium hover:bg-red-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-xmark"></i>
+                                Cancel Pending Change
+                            </span>
+                            <span x-show="tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Canceling...
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Tier Group: Pending change TO this product -->
+                    <div x-show="modal.data?.active_tier_group && modal.data?.active_tier_group?.pending_change_product_id === modal.data?.id && modal.data?.active_tier_group?.active_product_id !== modal.data?.id"
+                        class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-center space-y-3">
+                        <div class="flex items-center justify-center gap-2 text-yellow-400 font-bold">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Pending Change</span>
+                        </div>
+                        <p class="text-sm text-muted">You are already switching to this tier at your next renewal.</p>
+                        <button @click="cancelPendingTierChange(modal.data)"
+                                :disabled="tierChange.isLoading"
+                                class="w-full bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl py-3 font-medium hover:bg-red-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-xmark"></i>
+                                Cancel Pending Change
+                            </span>
+                            <span x-show="tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Canceling...
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Tier Group: Change to this tier button -->
+                    <div x-show="modal.data?.active_tier_group && modal.data?.active_tier_group?.active_product_id !== modal.data?.id && modal.data?.active_tier_group?.pending_change_product_id !== modal.data?.id">
+                        <button @click="previewTierChange(modal.data)"
+                                :disabled="tierChange.isLoading"
+                                class="w-full bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                Change to this Tier
+                            </span>
+                            <span x-show="tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Loading preview...
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Non-tier-group: normal trial button -->
+                    <div x-show="!modal.data?.active_tier_group && modal.data?.trial.enabled">
                         <button
                             @click="addToCart(modal.data, true, { period_value: modal.data?.trial?.period_value, period_scale: modal.data?.trial?.period_scale })"
                             class="w-full col-span-2 bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
-
                             <span x-text="modal.data?.trial?.period_value || ''"></span>
                             <span x-text="modal.data?.trial?.period_scale || ''"></span>
                             Free Trial
                         </button>
                     </div>
-                    <div class="flex flex-col md:flex-row gap-4">
+
+                    <!-- Non-tier-group: normal add to cart / subscribe buttons -->
+                    <div x-show="!modal.data?.active_tier_group" class="flex flex-col md:flex-row gap-4">
                         <button x-show="modal.data?.allowOnetimePurchase" @click="addToCart(modal.data, false)"
                                 class="w-full bg-emerald-500 btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all">
                             Add to Cart
@@ -308,8 +381,197 @@
                             Subscribe
                         </button>
                     </div>
+
                 </div>
             </div>
+
+            <div x-show="modal.type === 'tierChangePreview'" class="p-8">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-primary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-right-arrow-left text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Change Tier</h2>
+                    <p class="text-muted mt-1">Review your tier change details</p>
+                    <p x-show="tierChange.preview?.proration_behavior === 'immediate'" class="text-xs text-muted mt-2">
+                        <i class="fa-solid fa-credit-card mr-1 text-primary"></i>
+                        Your payment method on file will be charged automatically.
+                    </p>
+                </div>
+            
+                <div x-show="tierChange.preview" class="space-y-4">
+                    <!-- Proration behavior info -->
+                    <div class="bg-content-light rounded-xl p-4">
+                        <h4 class="font-bold mb-3 flex items-center gap-2 text-white">
+                            <i class="fa-solid fa-receipt text-primary"></i>
+                            Change Summary
+                        </h4>
+            
+                        <div class="space-y-3">
+                            <!-- Status -->
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-muted">Proration</span>
+                                <span class="text-white font-medium"
+                                      x-text="tierChange.preview?.proration_behavior === 'immediate' ? 'Immediate (prorated)' : tierChange.preview?.proration_behavior === 'next_billing_period' ? 'At next renewal' : 'Immediate (no proration)'"></span>
+                            </div>
+            
+                            <!-- Prorated amount (if immediate) -->
+                            <div x-show="tierChange.preview?.proration_behavior === 'immediate'" class="flex items-center justify-between text-sm">
+                                <span class="text-muted">Due now</span>
+                                <span class="text-primary font-bold"
+                                      x-text="tierChange.preview?.prorated_amount ? formatCurrency(tierChange.preview.prorated_amount.presentment_prorated_amount ?? tierChange.preview.prorated_amount.prorated_amount, tierChange.preview.prorated_amount.presentment_currency ?? tierChange.preview.prorated_amount.currency) : ''"></span>
+                            </div>
+            
+                            <!-- Next billing amount -->
+                            <div class="flex items-center justify-between text-sm border-t border-white/5 pt-3">
+                                <span class="text-muted">Next renewal</span>
+                                <span class="text-white font-bold"
+                                      x-text="tierChange.preview?.next_billing_presentment_amount ? formatCurrency(tierChange.preview.next_billing_presentment_amount.total, tierChange.preview.next_billing_presentment_amount.currency) : (tierChange.preview?.next_billing_amount ? formatCurrency(tierChange.preview.next_billing_amount.total, tierChange.preview.next_billing_amount.currency) : '')"></span>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Lines detail -->
+                    <template x-if="tierChange.preview?.lines && tierChange.preview.lines.length > 0">
+                        <div class="bg-content-light rounded-xl p-4">
+                            <h4 class="font-bold mb-3 flex items-center gap-2 text-white text-sm">
+                                <i class="fa-solid fa-list text-primary"></i>
+                                Line Items
+                            </h4>
+                            <div class="space-y-4">
+                                <template x-for="line in tierChange.preview.lines" :key="line.id">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <div class="flex items-center gap-2">
+                                                <i x-show="line.is_deleted" class="fa-solid fa-minus text-red-400 text-xs"></i>
+                                                <i x-show="!line.is_deleted" class="fa-solid fa-plus text-emerald-400 text-xs"></i>
+                                                <span :class="line.is_deleted ? 'text-red-400 line-through' : 'text-white'" x-text="line.product?.name || 'Product'"></span>
+                                            </div>
+                                            <span class="text-muted" x-text="formatCurrency(line.presentment_amount?.total ?? line.amount?.total ?? 0, line.presentment_amount?.currency ?? line.amount?.currency)"></span>
+                                        </div>
+                    
+                                        <!-- Billing period usage bar -->
+                                        <div x-show="line.total_minutes && line.total_minutes > 0" class="space-y-1">
+                                            <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                                <div class="h-full rounded-full transition-all duration-500"
+                                                     :class="line.is_deleted ? 'bg-red-400/60' : 'bg-primary/60'"
+                                                     :style="'width: ' + Math.round(((line.total_minutes - line.remaining_minutes) / line.total_minutes) * 100) + '%'">
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between text-xs text-muted">
+                                                <span x-text="Math.round(((line.total_minutes - line.remaining_minutes) / line.total_minutes) * 100) + '% of period used'"></span>
+                                                <span x-text="(() => {
+                                                    const days = Math.floor(line.remaining_minutes / 1440);
+                                                    const hours = Math.floor((line.remaining_minutes % 1440) / 60);
+                                                    if (days > 0) return days + 'd ' + hours + 'h remaining';
+                                                    if (hours > 0) return hours + 'h remaining';
+                                                    return line.remaining_minutes + 'm remaining';
+                                                })()"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+            
+                    <!-- Info banner for next_billing_period -->
+                    <div x-show="tierChange.preview?.proration_behavior === 'next_billing_period'"
+                         class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 text-center">
+                        <p class="text-sm text-blue-400">
+                            <i class="fa-solid fa-info-circle mr-1"></i>
+                            No payment required - change applies at your next renewal.
+                        </p>
+                    </div>
+            
+                    <!-- Action buttons -->
+                    <div class="flex gap-3">
+                        <button @click="modal.type = 'productInfo'; tierChange.preview = null;"
+                                class="px-5 bg-content-light shadow-2xl py-4 rounded-xl hover:bg-content transition-all">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button @click="confirmTierChange(modal.data)"
+                                :disabled="tierChange.isLoading"
+                                class="flex-1 bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!tierChange.isLoading">Confirm Change</span>
+                            <span x-show="tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Processing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            
+                <!-- Loading state -->
+                <div x-show="tierChange.isLoading && !tierChange.preview" class="text-center py-8">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-primary mb-4"></i>
+                    <p class="text-muted">Loading tier change preview...</p>
+                </div>
+            
+                <!-- Error state -->
+                <div x-show="tierChange.error && !tierChange.isLoading" class="text-center py-8">
+                    <i class="fa-solid fa-exclamation-triangle text-3xl text-red-400 mb-4"></i>
+                    <p class="text-red-400" x-text="tierChange.error"></p>
+                    <button @click="modal.type = 'productInfo'"
+                            class="mt-4 px-6 py-2 bg-content-light rounded-lg text-white hover:bg-content transition-all">
+                        Go Back
+                    </button>
+                </div>
+            </div>
+
+            <div x-show="modal.type === 'tierChangeVerification'" class="p-8">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-primary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                        <i class="fa-solid fa-envelope text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Verify Your Identity</h2>
+                    <p class="text-muted mt-1">We sent a verification code to your email to confirm this change.</p>
+                    <p x-show="tierChange.verification.destination_hint" class="text-sm text-primary mt-2">
+                        <i class="fa-solid fa-envelope mr-1"></i>
+                        <span x-text="tierChange.verification.destination_hint"></span>
+                    </p>
+                </div>
+            
+                <div class="space-y-4">
+                    <div>
+                        <input type="text"
+                               x-model="tierChange.verification.code"
+                               @keydown.enter="confirmTierChange(modal.data, tierChange.verification.code)"
+                               maxlength="6"
+                               inputmode="numeric"
+                               pattern="[0-9]*"
+                               autocomplete="one-time-code"
+                               placeholder="Enter 6-digit code"
+                               class="px-4 py-4 bg-content-light w-full rounded-xl text-center text-2xl font-mono tracking-[0.5em] outline-none placeholder:text-gray-500 placeholder:text-base placeholder:tracking-normal focus:ring-2 focus:ring-primary/50 transition-all" />
+                    </div>
+            
+                    <!-- Error message -->
+                    <div x-show="tierChange.verification.error"
+                         class="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-center">
+                        <p class="text-sm text-red-400" x-text="tierChange.verification.error"></p>
+                    </div>
+            
+                    <div class="flex gap-3">
+                        <button @click="modal.type = 'tierChangePreview'; tierChange.verification = { required: false, destination_hint: null, code: '', error: null };"
+                                class="px-5 bg-content-light shadow-2xl py-4 rounded-xl hover:bg-content transition-all">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button @click="confirmTierChange(modal.data, tierChange.verification.code)"
+                                :disabled="tierChange.isLoading || tierChange.verification.code.length < 6"
+                                class="flex-1 bg-primary btn-shine text-white rounded-xl py-4 font-bold hover:opacity-75 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!tierChange.isLoading">Verify & Confirm</span>
+                            <span x-show="tierChange.isLoading" class="flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Verifying...
+                            </span>
+                        </button>
+                    </div>
+            
+                    <p class="text-xs text-muted text-center mt-2">
+                        Didn't receive a code? Check your spam folder or contact PayNow support.
+                    </p>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
