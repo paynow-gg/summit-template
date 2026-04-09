@@ -51,7 +51,8 @@
                                             {{ key|json_encode }}: {{ value|json_encode }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
-                                }
+                                },
+                                active_tier_group: {{ product.active_tier_group ? product.active_tier_group|json_encode : 'null' }},
                     })" 
                 class="relative h-48 bg-content-light flex items-center justify-center cursor-pointer overflow-hidden group-hover:bg-primary transition-colors duration-300">
                 
@@ -176,9 +177,31 @@
                                     {% endif %}
                                 }
                             })" 
-                            class="cursor-pointer flex-1 bg-content-light text-white rounded-xl py-3 px-4 font-medium hover:bg-primary transition-all duration-200 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-eye text-sm"></i>
-                        <span>View</span>
+                            class="cursor-pointer flex-1 bg-content-light text-white rounded-xl py-3 px-4 font-medium hover:bg-primary transition-all duration-200 flex items-center justify-center gap-2"
+                            :class="{
+                                '!bg-emerald-500/20 !text-emerald-400 !hover:bg-emerald-500/20 pointer-events-none': '{{ product.active_tier_group.active_product_id|default('') }}' === '{{ product.id }}' && !'{{ product.active_tier_group.pending_change_product_id|default('') }}',
+                                '!bg-yellow-500/20 !text-yellow-400': '{{ product.active_tier_group.active_product_id|default('') }}' === '{{ product.id }}' && '{{ product.active_tier_group.pending_change_product_id|default('') }}',
+                                '!bg-yellow-500/20 !text-yellow-400': '{{ product.active_tier_group.pending_change_product_id|default('') }}' === '{{ product.id }}' && '{{ product.active_tier_group.active_product_id|default('') }}' !== '{{ product.id }}',
+                                '!bg-primary': {{ product.active_tier_group ? 'true' : 'false' }} && '{{ product.active_tier_group.active_product_id|default('') }}' !== '{{ product.id }}' && '{{ product.active_tier_group.pending_change_product_id|default('') }}' !== '{{ product.id }}'
+                            }">
+                            {% if product.active_tier_group %}
+                                {% if product.active_tier_group.active_product_id == product.id and not product.active_tier_group.pending_change_product_id %}
+                                    <i class="fa-solid fa-circle-check text-sm"></i>
+                                    <span>Current Plan</span>
+                                {% elseif product.active_tier_group.active_product_id == product.id and product.active_tier_group.pending_change_product_id %}
+                                    <i class="fa-solid fa-clock text-sm"></i>
+                                    <span>Current Plan</span>
+                                {% elseif product.active_tier_group.pending_change_product_id == product.id %}
+                                    <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                                    <span>Pending Change</span>
+                                {% else %}
+                                    <i class="fa-solid fa-arrow-right-arrow-left text-sm"></i>
+                                    <span>Change Tier</span>
+                                {% endif %}
+                            {% else %}
+                                <i class="fa-solid fa-eye text-sm"></i>
+                                <span>View</span>
+                            {% endif %}
                     </button>
                 </div>
             </div>
