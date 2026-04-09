@@ -82,6 +82,18 @@ function storeApp() {
             }
         },
 
+        tierChange: {
+            isLoading: false,
+            preview: null,
+            error: null,
+            verification: {
+                required: false,
+                destination_hint: null,
+                code: '',
+                error: null
+            },
+        },
+
         useIFrameCheckout: true,
         
         init() {
@@ -185,6 +197,7 @@ function storeApp() {
                 this.modal.selectedAction = null;
                 this.modal.giftRecipientId = null;
                 this.modal.giftPlatform = null;
+                this.tierChange.verification = { required: false, destination_hint: null, code: '', error: null };
             }, 200);
         },
         
@@ -771,7 +784,172 @@ function storeApp() {
                     }
                 }, 300);
             }, 3000);
-        }
+        },
+
+        async previewTierChange(product) {
+            const tierGroupId = product.active_tier_group.tier_group_id;
+            this.tierChange.isLoading = true;
+            this.tierChange.preview = null;
+            this.tierChange.error = null;
+        
+            try {
+                const response = await fetch(`/tier-groups/${tierGroupId}/change/preview`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ target_product_id: product.id })
+                });
+        
+                if (!response.ok) {
+                    await this.handleResponseError(response);
+                    this.tierChange.isLoading = false;
+                    return;
+                }
+        
+                const data = await response.json();
+                this.tierChange.preview = data.subscription_change;
+                this.modal.type = 'tierChangePreview';
+            } catch (e) {
+                this.showNotification('Failed to load tier change preview', 'error');
+            }
+        
+            this.tierChange.isLoading = false;
+        },
+        
+        async confirmTierChange(product, verificationCode) {
+            const tierGroupId = product.active_tier_group.tier_group_id;
+            this.tierChange.isLoading = true;
+        
+            try {
+                const body = { target_product_id: product.id };
+                if (verificationCode) {
+                    body.verification_code = verificationCode;
+                }
+
+                const response = await fetch(`/tier-groups/${tierGroupId}/change`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(body)
+                });
+        
+                if (!response.ok) {
+                    await this.handleResponseError(response);
+                    this.tierChange.isLoading = false;
+                    return;
+                }
+        
+                const data = await response.json();
+                const change = data.subscription_change;
+
+                if (change.status === 'pending_verification') {
+                    this.tierChange.preview = change;
+                    this.tierChange.verification = {
+                        required: true,
+                        destination_hint: data.verification?.destination_hint || null,
+                        code: '',
+                        error: null
+                    };
+                    this.modal.type = 'tierChangeVerification';
+                    this.tierChange.isLoading = false;
+
+                    return;
+                }
+
+                // Payment was declined
+                if (data.pending_payment?.declined) {
+                    const declineMsg = data.pending_payment.decline_message || 'Your payment method was declined.';
+                    this.showNotification(declineMsg, 'error');
+                    this.tierChange.isLoading = false;
+                    return;
+                }
+        
+                // If the change triggered a payment that needs on-session handling
+                if (data.pending_payment?.checkout_url) {
+                    this.showNotification('Redirecting to complete payment...', 'info');
+                    this.closeModal();
+                    setTimeout(() => {
+                        window.location.href = data.pending_payment.checkout_url;
+                    }, 800);
+                    return;
+                }
+        
+                const behaviorMsg = {
+                    immediate: 'Tier switched immediately. Proration charge applied.',
+                    next_billing_period: 'Tier will switch at next renewal.',
+                    none: 'Tier switched immediately.'
+                }[change.proration_behavior] ?? 'Tier change applied.';
+        
+                this.showNotification(behaviorMsg, 'success');
+                this.closeModal();
+        
+                setTimeout(() => window.location.reload(), 600);
+            } catch (e) {
+                this.showNotification('Failed to apply tier change', 'error');
+            }
+        
+            this.tierChange.isLoading = false;
+        },
+        
+        formatCurrency(amount, currency) {
+            return new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: currency.toUpperCase(),
+                minimumFractionDigits: 2
+            }).format(amount / 100);
+        },
+        
+        getTierChangeProrationLabel(preview) {
+            if (!preview) return '';
+            const behavior = preview.proration_behavior;
+            const amount = preview.prorated_amount;
+        
+            if (behavior === 'next_billing_period') {
+                return 'No charge now - change applies at next renewal.';
+            }
+            if (behavior === 'none') {
+                return 'No proration - change applies immediately.';
+            }
+
+            const currency = amount.presentment_currency;
+            const total = amount.presentment_prorated_amount;
+            return `Due now: ${this.formatCurrency(total, currency)} (prorated)`;
+        },
+
+        async cancelPendingTierChange(product) {
+            const tierGroupId = product.active_tier_group.tier_group_id;
+            this.tierChange.isLoading = true;
+        
+            try {
+                const response = await fetch(`/tier-groups/${tierGroupId}/change`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ target_product_id: product.active_tier_group.active_product_id })
+                });
+        
+                if (!response.ok) {
+                    await this.handleResponseError(response);
+                    this.tierChange.isLoading = false;
+                    return;
+                }
+        
+                this.showNotification('Pending tier change canceled.', 'success');
+                this.closeModal();
+        
+                setTimeout(() => window.location.reload(), 600);
+            } catch (e) {
+                this.showNotification('Failed to cancel pending tier change', 'error');
+            }
+        
+            this.tierChange.isLoading = false;
+        },
     };
 }
 
