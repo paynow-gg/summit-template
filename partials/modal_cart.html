@@ -88,7 +88,7 @@
                                     </span>
                                 </div>
 
-                                <span x-show="item.subscription && !item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg--900 text-green-300">Renews Monthly</span>
+                                <span x-show="item.subscription && !item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">Renews Monthly</span>
                                 <span x-show="item.isTrial" class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">Free Trial</span>
 
                                 <!-- Display selected options -->
@@ -124,8 +124,7 @@
                                 </div>
                                 
                                 <p class="text-sm text-muted mt-1">
-                                    <span x-text="'$' + item.price.toFixed(2)"></span>
-                                    <span x-text="item.currency || 'USD'"></span>
+                                    <span x-text="formatCurrencyMajor(item.price, item.currency)"></span>
                                 </p>
                             </div>
                             <button @click="removeFromCart(item.id)" 
@@ -163,7 +162,7 @@
                             </div>
                             
                             <div class="text-right">
-                                <span x-text="'$' + (item.price * item.quantity).toFixed(2)" class="font-bold text-primary text-lg"></span>
+                                <span x-text="formatCurrencyMajor(item.price * item.quantity, item.currency)" class="font-bold text-primary text-lg"></span>
                             </div>
                         </div>
                     </div>
@@ -174,7 +173,7 @@
         <div x-show="cart.items.length > 0" class="p-6 border-t border-content-light bg-content">
             <div class="flex items-center justify-between mb-6 text-lg">
                 <span class="font-bold">Total:</span>
-                <span x-text="'$' + cart.total.toFixed(2)" class="font-bold text-primary text-2xl"></span>
+                <span x-text="formatCurrencyMajor(cart.total, cart.items[0]?.currency)" class="font-bold text-primary text-2xl"></span>
             </div>
             
             <div x-show="cart.items.some(item => item.isGift) && cart.items.some(item => !item.isGift)" 
