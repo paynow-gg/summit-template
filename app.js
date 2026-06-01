@@ -902,6 +902,13 @@ function storeApp() {
                 minimumFractionDigits: 2
             }).format(amount / 100);
         },
+
+        formatCurrencyMajor(amount, currency) {
+            return new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: (currency || 'USD').toUpperCase()
+            }).format(amount || 0);
+        },
         
         getTierChangeProrationLabel(preview) {
             if (!preview) return '';
