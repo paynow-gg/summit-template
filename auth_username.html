@@ -28,8 +28,8 @@
                             onclick="selectPlatform('java')"
                             class="platform-btn flex items-center gap-3 p-4 rounded-xl border-2 border-content-light bg-content-light hover:border-primary transition-all duration-200 text-left selected"
                         >
-                            <div class="w-10 h-10 rounded-lg bg-[#8B5E3C] flex items-center justify-center flex-shrink-0">
-                                <i class="fa-brands fa-java text-white text-xl"></i>
+                            <div class="platform-icon w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/10 bg-primary/20">
+                                <i class="fa-solid fa-mug-hot text-primary text-lg"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-white text-sm">Java</div>
@@ -42,8 +42,8 @@
                             onclick="selectPlatform('bedrock')"
                             class="platform-btn flex items-center gap-3 p-4 rounded-xl border-2 border-content-light bg-content-light hover:border-primary transition-all duration-200 text-left"
                         >
-                            <div class="w-10 h-10 rounded-lg bg-[#e74c3c] flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-gamepad text-white text-lg"></i>
+                            <div class="platform-icon w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/10 bg-white/5">
+                                <i class="fa-solid fa-cube text-slate-300 text-lg"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-white text-sm">Bedrock</div>
@@ -216,8 +216,12 @@ input:focus {
 
 .platform-btn.selected {
     border-color: var(--color-primary, #754dd4);
-    background-color: rgba(117, 77, 212, 0.08);
+    background-color: rgba(117, 77, 212, 0.14);
     position: relative;
+}
+
+.platform-btn.selected .platform-icon {
+    background-color: rgba(117, 77, 212, 0.25);
 }
 
 .platform-btn.selected::after {
