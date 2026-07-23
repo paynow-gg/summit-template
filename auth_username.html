@@ -12,11 +12,48 @@
                     Enter Your Username
                 </h1>
                 <p class="text-muted text-sm">
-                    Please enter your {{ platform_identifier_name }} to continue
+                    Please enter your username to continue
                 </p>
             </div>
 
             <form method="post" class="space-y-6">
+                {% if store.platform == "minecraft_geyser" %}
+                <input type="hidden" name="platform" id="platform-input" value="java" />
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">Minecraft Edition</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button
+                            type="button"
+                            id="btn-java"
+                            onclick="selectPlatform('java')"
+                            class="platform-btn flex items-center gap-3 p-4 rounded-xl border-2 border-content-light bg-content-light hover:border-primary transition-all duration-200 text-left selected"
+                        >
+                            <div class="w-10 h-10 rounded-lg bg-[#8B5E3C] flex items-center justify-center flex-shrink-0">
+                                <i class="fa-brands fa-java text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-white text-sm">Java</div>
+                                <div class="text-xs text-muted">Java Edition</div>
+                            </div>
+                        </button>
+                        <button
+                            type="button"
+                            id="btn-bedrock"
+                            onclick="selectPlatform('bedrock')"
+                            class="platform-btn flex items-center gap-3 p-4 rounded-xl border-2 border-content-light bg-content-light hover:border-primary transition-all duration-200 text-left"
+                        >
+                            <div class="w-10 h-10 rounded-lg bg-[#e74c3c] flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-gamepad text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-white text-sm">Bedrock</div>
+                                <div class="text-xs text-muted">Bedrock Edition</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div>
                     <label for="username" class="block text-sm font-medium text-white mb-2">
                         {{ platform_identifier_name }}
@@ -36,7 +73,7 @@
                             maxlength="32"
                         />
                     </div>
-                    <p class="mt-2 text-xs text-muted">
+                    <p class="mt-2 text-xs text-muted" id="username-hint">
                         Your {{ platform_identifier_name }}
                     </p>
                 </div>
@@ -91,9 +128,35 @@
 </div>
 
 <script>
+function selectPlatform(platform) {
+    document.getElementById('platform-input').value = platform;
+
+    document.querySelectorAll('.platform-btn').forEach(btn => {
+        btn.classList.remove('selected', 'border-primary');
+        btn.classList.add('border-content-light');
+    });
+
+    const active = document.getElementById('btn-' + platform);
+    active.classList.add('selected', 'border-primary');
+    active.classList.remove('border-content-light');
+
+    const hint = document.getElementById('username-hint');
+    if (hint) {
+        hint.textContent = platform === 'bedrock'
+            ? 'A single * is automatically added before Bedrock usernames.'
+            : hint.dataset.default;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const usernameInput = document.getElementById('username');
     const form = usernameInput.closest('form');
+    const hint = document.getElementById('username-hint');
+    if (hint) hint.dataset.default = hint.textContent;
+
+    // Init Java as selected
+    const platformInput = document.getElementById('platform-input');
+    if (platformInput) selectPlatform(platformInput.value || 'java');
 
     usernameInput.focus();
 
@@ -149,6 +212,27 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
 input:focus {
     box-shadow: 0 0 0 3px rgba(117, 77, 212, 0.1);
+}
+
+.platform-btn.selected {
+    border-color: var(--color-primary, #754dd4);
+    background-color: rgba(117, 77, 212, 0.08);
+    position: relative;
+}
+
+.platform-btn.selected::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-primary, #754dd4);
+    border-radius: 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-size: 11px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 form.submitting button {
