@@ -3,13 +3,14 @@
   "updates": {
       "supported": true,
       "version_check_supported": true,
-      "version": "1.0.13",
+      "version": "1.0.14",
       "github_url": "https://github.com/paynow-gg/summit-template",
       "github_branch": "main"
   },
   "config": [
       {
           "header": "SEO Settings",
+          "description": "How your store appears in search results and when its link is shared on social media.",
           "options": [
               {
                   "id": "site_description",
@@ -43,6 +44,7 @@
       },
       {
           "header": "Template Customization",
+          "description": "The colours used across the template, and how checkout opens.",
           "options": [
             {
               "id": "main-color",
@@ -69,6 +71,7 @@
       },
       {
           "header": "Hero Customization",
+          "description": "The banner at the top of every page: your logo and its background image.",
           "options": [
             {
               "id": "logo_url",
@@ -116,6 +119,7 @@
       },
       {
           "header": "Server Information",
+          "description": "Your game server and Discord details, used for the live player and Discord online counts and the Discord buttons.",
           "options": [
             {
               "id": "server_ip",
@@ -149,6 +153,7 @@
       },
       {
           "header": "Social Media",
+          "description": "Links to your social profiles, shown as icons on category pages and in the footer. Leave a link empty to hide its icon.",
           "options": [
             {
               "id": "instagram_url",
@@ -196,6 +201,7 @@
       },
       {
           "header": "Welcome Section",
+          "description": "The welcome message at the top of the home page.",
           "options": [
               {
                   "id": "welcome-text",
@@ -208,6 +214,7 @@
       },
       {
           "header": "Support Section",
+          "description": "The support block on the home page, shown next to the Discord Server and Contact Us buttons.",
           "options": [
               {
                   "id": "support-text",
@@ -220,6 +227,7 @@
       },
       {
           "header": "Payment Section",
+          "description": "The payments block on the home page, shown next to the Terms and Conditions and Privacy Policy buttons.",
           "options": [
               {
                   "id": "payment-text",
@@ -232,6 +240,7 @@
       },
       {
         "header": "Custom Pages",
+        "description": "Extra pages for your store, such as rules or an FAQ, linked from the footer.",
         "options": [
           {
             "id": "custom_pages",
@@ -278,6 +287,7 @@
     },
     {
       "header": "Advanced SEO Settings",
+      "description": "Extra search engine options. The defaults suit most stores, so only change these if you know you need them.",
       "options": [
           {
               "id": "breadcrumbs_enabled",
